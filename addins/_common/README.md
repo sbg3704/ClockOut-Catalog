@@ -12,6 +12,12 @@
 - lib는 추가기능에 의존하지 않는다(한쪽 방향).
 - 요청은 한 일마다 별도 PR로 올리고, 완료는 PR#4(계정1 우편함)에 리뷰 댓글로 알린다. 무게(+1/+10/+100)만 적는다.
 
+## id와 판 (2026-11-08 확정, 요청 002)
+- 공용 lib의 **id는 `clockout-lib`**(바뀌지 않음), 판은 선언 파일 `clockout-lib.clockout.json`의 `version`(지금 `0.1.000`). 추가기능은 `dependencies`에 이 id를 적는다.
+- 지금은 lib가 각 추가기능 .xlam에 함께 컴파일되므로 `"bundled": true`로 적는다(예: `image-fit.clockout.json`). 독립 `clockout-lib.xlam` 배포로 바뀌면 `bundled`를 빼고 `min_version`을 적는다.
+- 외부 라이브러리 모음은 **id `vba-vendor`**(`catalog.json`의 `libraries`, 지금 `0.1.000`, 출처 `vendor/vba/SOURCES.md`).
+- 판은 공개 함수를 더하거나 동작을 바꿔 Release에 다시 올릴 때만 올린다(`docs/02` 1장 규칙). 이미 쓰는 공개 함수의 이름·인자는 바꾸지 않으므로 판이 올라가도 예전 추가기능이 깨지지 않는다.
+
 ## 독립 xlam으로 부르기 (요청 003)
 공용 lib는 `clockout-lib.xlam`으로 따로 설치할 수 있다. 추가기능은 모듈을 넣지 않고 설치된 lib를 부른다.
 ```vb
