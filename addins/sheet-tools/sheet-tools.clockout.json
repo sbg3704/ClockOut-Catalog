@@ -1,0 +1,22 @@
+{
+  "spec": 0,
+  "id": "sheet-tools",
+  "name": "시트 도구",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "시트 탭을 우클릭하면 '칼퇴 시트 도구' 메뉴가 나옵니다. 시트 목차 만들기, 목록으로 시트 만들기, 시트별 파일로 내보내기, 폴더 파일 목록 만들기. 새 시트·새 파일을 만들 뿐 기존 시트는 지우지 않습니다.",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "시트 이름·파일 처리·확인창에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "indexName", "label": "목차 시트 이름", "type": "text", "default": "목차"},
+    {"key": "indexIncludeHidden", "label": "목차에 숨긴 시트도 넣기", "type": "bool", "default": true},
+    {"key": "makeBase", "label": "목록으로 만들 시트의 바탕", "type": "choice", "options": ["빈 시트", "현재 시트 복사"], "default": "빈 시트"},
+    {"key": "makePosition", "label": "새 시트 위치", "type": "choice", "options": ["맨 뒤", "현재 시트 뒤"], "default": "맨 뒤"},
+    {"key": "exportValues", "label": "내보낼 때 수식을 값으로 바꾸기", "type": "bool", "default": true, "help": "끄면 수식이 그대로 남아 다른 시트를 참조하는 칸이 깨질 수 있습니다"},
+    {"key": "exportPrefix", "label": "내보낸 파일 이름 앞에 원본 이름 붙이기", "type": "bool", "default": false},
+    {"key": "listSubfolders", "label": "폴더 파일 목록에 하위 폴더 포함", "type": "bool", "default": true},
+    {"key": "listMaxRows", "label": "폴더 파일 목록 최대 줄 수", "type": "number", "default": 20000, "min": 100, "max": 100000}
+  ]
+}
