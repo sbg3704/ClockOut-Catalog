@@ -16,5 +16,19 @@
                ],
     "packs":  [
 
-              ]
+              ],
+    "libraries":  [
+                      {
+                          "id":  "vba-vendor",
+                          "name":  "외부 VBA 라이브러리 모음",
+                          "version":  "0.1.000",
+                          "author":  "VBA-tools(Tim Hall), Senipah, sancarn",
+                          "host":  "excel",
+                          "license":  "MIT (라이브러리마다 LICENSE 포함)",
+                          "description":  "매크로 제작용 공개 VBA 라이브러리 원본 모음: VBA-JSON, VBA-Dictionary, VBA-UTC, VBA-Web, VBA-Better-Array, stdVBA. 설치하는 추가기능이 아니라 소스 모음이며, 출처·커밋·라이선스는 SOURCES.md에 있습니다. 공용 lib(clockout-lib)와는 별개입니다.",
+                          "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/vba-vendor-0.1.000/vba-vendor.zip",
+                          "sha256":  "c63d2948c1854e58ca4bba1a202218cea27b55337457864c9703bf13eb1f348a",
+                          "size":  477069
+                      }
+                  ]
 }
