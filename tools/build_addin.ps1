@@ -33,6 +33,7 @@ $script:exitCode = 0
 $repo = Split-Path -Parent $PSScriptRoot
 $addinDir = Join-Path $repo "addins\$Addin"
 $commonDir = Join-Path $repo 'addins\_common'
+$clientDir = Join-Path $repo 'addins\_client'
 $isLib = ($Addin -eq '_common')
 $outId = if ($isLib) { 'clockout-lib' } else { $Addin }
 if (-not $isLib -and $Addin -notmatch '^[a-z0-9-]+$') { Write-Host "[중단] 추가기능 id는 영문 소문자·숫자·하이픈만 쓸 수 있습니다: $Addin" -ForegroundColor Red; exit 1 }
@@ -44,14 +45,28 @@ try { [Text.Encoding]::RegisterProvider([Text.CodePagesEncodingProvider]::Instan
 $cp949 = [Text.Encoding]::GetEncoding(949, (New-Object Text.EncoderExceptionFallback), (New-Object Text.DecoderExceptionFallback))
 
 # --- 소스 모으기 ---
-$srcFiles = @()
-$srcFiles += Get-ChildItem $addinDir -File | Where-Object { $_.Extension -in '.bas', '.cls' }
-if (-not $isLib -and (Test-Path $commonDir)) { $srcFiles += Get-ChildItem $commonDir -File | Where-Object { $_.Extension -in '.bas', '.cls' } }
-$dups = $srcFiles | Group-Object Name | Where-Object { $_.Count -gt 1 }
-if ($dups) { Write-Host "[중단] 같은 이름의 모듈 파일이 addins\$Addin 와 addins\_common 에 모두 있습니다: $(($dups | ForEach-Object Name) -join ', ')" -ForegroundColor Red; exit 1 }
-if (-not $srcFiles) { Write-Host "[중단] 가져올 .bas 파일이 없습니다." -ForegroundColor Red; exit 1 }
-$twFile = Get-ChildItem $addinDir -File -Filter 'ThisWorkbook_*.txt' | Select-Object -First 1
+# 공용 lib를 따로 설치해 쓰는 추가기능(선언의 dependencies에 clockout-lib이 있고 bundled가 아님)은 lib 소스 대신
+# addins\_client\CoLibClient.bas(얇은 연결부)를 넣는다. 그렇지 않으면 예전처럼 addins\_common 소스를 함께 컴파일한다.
+$srcExt = '.bas', '.cls', '.frm'
 $declFile = Get-ChildItem $addinDir -File -Filter '*.clockout.json' | Select-Object -First 1
+$useClient = $false
+if ($declFile -and -not $isLib) {
+    try {
+        $declObj = [IO.File]::ReadAllText($declFile.FullName, [Text.Encoding]::UTF8) | ConvertFrom-Json
+        foreach ($dep in @($declObj.dependencies)) { if ($dep.id -eq 'clockout-lib' -and -not $dep.bundled) { $useClient = $true } }
+    } catch { Write-Host "[중단] 선언 파일을 읽을 수 없습니다: $($declFile.Name) ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
+}
+$srcFiles = @()
+$srcFiles += Get-ChildItem $addinDir -File | Where-Object { $_.Extension -in $srcExt }
+if (-not $isLib) {
+    if ($useClient) { if (Test-Path $clientDir) { $srcFiles += Get-ChildItem $clientDir -File | Where-Object { $_.Extension -in $srcExt } } }
+    elseif (Test-Path $commonDir) { $srcFiles += Get-ChildItem $commonDir -File | Where-Object { $_.Extension -in $srcExt } }
+}
+$dups = $srcFiles | Group-Object Name | Where-Object { $_.Count -gt 1 }
+if ($dups) { Write-Host "[중단] 같은 이름의 모듈 파일이 여러 폴더에 있습니다: $(($dups | ForEach-Object Name) -join ', ')" -ForegroundColor Red; exit 1 }
+if (-not $srcFiles) { Write-Host "[중단] 가져올 .bas 파일이 없습니다." -ForegroundColor Red; exit 1 }
+if ($useClient) { Write-Host "공용 lib는 따로 설치해 쓰는 방식입니다(CoLibClient 연결부를 넣습니다)." }
+$twFile = Get-ChildItem $addinDir -File -Filter 'ThisWorkbook_*.txt' | Select-Object -First 1
 $readme = Join-Path $addinDir 'README.md'
 
 $tmp = Join-Path ([IO.Path]::GetTempPath()) ("clockout_build_" + [guid]::NewGuid().ToString('N'))
@@ -68,6 +83,8 @@ try {
         catch { Fail "$($f.Name): CP949로 쓸 수 없는 글자가 있습니다. (이모지·특수문자 등) 해당 글자를 고쳐 주세요." }
         $outPath = Join-Path $encDir $f.Name
         [IO.File]::WriteAllBytes($outPath, $bytes)
+        $frx = [IO.Path]::ChangeExtension($f.FullName, '.frx')
+        if ($f.Extension -eq '.frm' -and (Test-Path $frx)) { Copy-Item $frx (Join-Path $encDir ([IO.Path]::GetFileName($frx))) }
         $nm = [IO.Path]::GetFileNameWithoutExtension($f.Name)
         if ($text -match '(?m)^Attribute VB_Name = "([^"]+)"') { $nm = $Matches[1] }
         $modules += [pscustomobject]@{ Name = $nm; Path = $outPath; Src = $f.FullName; Text = $text }
@@ -158,6 +175,7 @@ try {
                     if ($t -match '(?m)^\s*MsgBox ') { Fail "시험 함수가 있는 모듈 '$($m.Name)'에 단순 MsgBox 형식이 아닌 호출이 있어 창이 뜰 수 있습니다. -RunTests 없이 실행하세요." }
                 }
                 $tp = Join-Path $tDir ([IO.Path]::GetFileName($m.Path))
+                $frxSrc = [IO.Path]::ChangeExtension($m.Path, '.frx'); if (Test-Path $frxSrc) { Copy-Item $frxSrc (Join-Path $tDir ([IO.Path]::GetFileName($frxSrc))) }
                 try { [IO.File]::WriteAllBytes($tp, $cp949.GetBytes($t)) } catch { Fail "시험용 사본 변환 실패: $($m.Name) (임시 폴더 경로에 CP949로 쓸 수 없는 글자가 있을 수 있음)" }
                 $tpaths += $tp
             }
@@ -197,7 +215,11 @@ try {
         Add-Entry $za $xlam "$outId.xlam"
         if ($declFile) { Add-Entry $za $declFile.FullName $declFile.Name }
         if (Test-Path $readme) { Add-Entry $za $readme 'README.md' }
-        foreach ($f in ($srcFiles | Sort-Object Name)) { Add-Entry $za $f.FullName ("src/" + $f.Name) }
+        foreach ($f in ($srcFiles | Sort-Object Name)) {
+            Add-Entry $za $f.FullName ("src/" + $f.Name)
+            $frxZ = [IO.Path]::ChangeExtension($f.FullName, '.frx')
+            if ($f.Extension -eq '.frm' -and (Test-Path $frxZ)) { Add-Entry $za $frxZ ("src/" + [IO.Path]::GetFileName($frxZ)) }
+        }
         if ($twFile) { Add-Entry $za $twFile.FullName ("src/" + $twFile.Name) }
     } finally { $za.Dispose() }
     Info "저장: $zip"
