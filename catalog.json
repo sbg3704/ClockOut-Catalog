@@ -1,7 +1,18 @@
 {
     "spec":  0,
-    "updated":  "2026-11-08",
+    "updated":  "2026-11-09",
     "addins":  [
+                   {
+                       "id":  "clockout-lib",
+                       "name":  "칼퇴 공용 라이브러리",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "description":  "칼퇴 추가기능들이 함께 쓰는 VBA 도우미 모음(설정 읽기, 실행 상태 복원, 선택 범위 검사, 사진·도형 맞춤, 파일 고르기, 글자·숫자·날짜 도우미). 지금은 각 추가기능 .xlam에 함께 컴파일되어 들어가므로 따로 설치하지 않아도 됩니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
+                       "sha256":  "6ac73758e91e10c4ac22c46153162058cd802dc2099b629397fd6da38f563a46",
+                       "size":  203566
+                   },
                    {
                        "id":  "image-fit",
                        "name":  "사진 셀에 맞추기",
