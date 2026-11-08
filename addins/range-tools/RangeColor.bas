@@ -45,12 +45,12 @@ Public Sub RangeColor_Sum()
     Else
         For Each key In sums.Keys
             k = k + 1
-            If k <= 15 Then txt = txt & Label(CLng(key), byFont) & ": 합계 " & Format$(sums(key), "#,##0.##") & "  (숫자 " & nums(key) & "칸" & _
+            If k <= 15 Then txt = txt & Label(CLng(key), byFont) & ": 합계 " & Num(sums(key)) & "  (숫자 " & nums(key) & "칸" & _
                                   IIf(texts(key) > 0, ", 글자 " & texts(key) & "칸", "") & ")" & vbCrLf
             tot = tot + sums(key)
         Next key
         If k > 15 Then txt = txt & "... 외 " & (k - 15) & "가지 색" & vbCrLf
-        api.CoGuard_Notice "[" & IIf(byFont, "글자색", "칸 색") & "별 합계] " & rng.Address(False, False) & vbCrLf & vbCrLf & txt & vbCrLf & "전체 합계: " & Format$(tot, "#,##0.##")
+        api.CoGuard_Notice "[" & IIf(byFont, "글자색", "칸 색") & "별 합계] " & rng.Address(False, False) & vbCrLf & vbCrLf & txt & vbCrLf & "전체 합계: " & Num(tot)
     End If
 End Sub
 
@@ -101,4 +101,10 @@ Private Function ST_Unique(ByVal api As Object, ByVal wb As Workbook, ByVal want
         cand = Left$(api.CoText_SafeSheetName(wanted), 28) & "_" & (n + 1)
     Loop
     ST_Unique = cand
+End Function
+
+' 숫자를 쉼표 표시로(정수면 소수점 없이, "30."처럼 점이 남지 않게).
+Private Function Num(ByVal x As Double) As String
+    Num = Format$(x, "#,##0.##")
+    If Right$(Num, 1) = "." Or Right$(Num, 1) = "," Then Num = Left$(Num, Len(Num) - 1)
 End Function
