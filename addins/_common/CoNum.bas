@@ -8,6 +8,8 @@ Attribute VB_Name = "CoNum"
 '   If CoNum_TryParse("1.5", x) Then ...  ' 지역 설정과 무관하게 "."를 소수점으로 읽음
 '   CoNum_RoundHalfUp(2.675, 2) -> 2.68  ' VBA Round(은행식 반올림)와 다른 보통 반올림
 '   CoNum_SafeDiv(a, b, 0)               ' b가 0이면 대신 값
+'   CoNum_TruncTo(1234, 100) -> 1200     ' 단위로 절사(0 쪽으로 버림). RoundHalfUp의 짝
+'   CoNum_ToKoreanWon(1234)              ' -> "일금 일천이백삼십사원정" (False면 "일금 " 없이)
 '   시험: Test_CoNum (직접 실행 창에 결과가 나온다)
 ' 의존: 없음
 '==============================================================
@@ -108,6 +110,63 @@ Public Function CoNum_RoundHalfUp(ByVal v As Double, Optional ByVal digits As Lo
     CoNum_RoundHalfUp = Sgn(v) * CDbl(d)
 End Function
 
+' unitValue의 배수로 절사한다(0 쪽으로 버림). TruncTo(1234, 100) -> 1200, TruncTo(-1234, 100) -> -1200,
+' TruncTo(1.239, 0.01) -> 1.23. unitValue가 0 이하이거나 아주 큰 수(1E15 넘음)는 그대로 돌려준다.
+' CoNum_RoundHalfUp처럼 Decimal로 계산해 부동소수 오차를 줄인다(비교는 CoNum_Near로).
+Public Function CoNum_TruncTo(ByVal v As Double, ByVal unitValue As Double) As Double
+    Dim d As Variant
+    CoNum_TruncTo = v
+    If unitValue <= 0 Or Abs(v) > 1E+15 Then Exit Function
+    On Error GoTo Fail
+    d = Fix(CDec(v) / CDec(unitValue)) * CDec(unitValue)
+    CoNum_TruncTo = CDbl(d)
+    Exit Function
+Fail:
+    CoNum_TruncTo = v
+End Function
+
+' 금액을 한글로 쓴다: 12345678 -> "일금 일천이백삼십사만오천육백칠십팔원정".
+'   - withPrefix=False면 앞의 "일금 "을 뺀다("일천이백삼십사원정"). 0 -> "영원정"("일금 영원정").
+'   - 단위는 만·억·조. 십·백·천 앞에도 "일"을 붙인다(수표·계약서 표기).
+'   - 음수·소수, 1경(10^16) 이상은 ""(호출 쪽이 처리, 오류를 던지지 않음).
+Public Function CoNum_ToKoreanWon(ByVal amount As Double, Optional ByVal withPrefix As Boolean = True) As String
+    Dim numText As String, body As String, part As String, n As Long, g As Long, units As Variant
+    On Error GoTo Fail
+    If amount < 0 Or amount <> Fix(amount) Or amount >= 1E+16 Then Exit Function
+    numText = CStr(CDec(amount))
+    If numText = "0" Then
+        body = "영"
+    Else
+        units = Array("", "만", "억", "조")
+        n = Len(numText)
+        Do While n > 0
+            If n >= 4 Then part = Mid$(numText, n - 3, 4) Else part = Left$(numText, n)
+            part = KoreanGroup(part)
+            If Len(part) > 0 Then body = part & units(g) & body
+            n = n - 4
+            g = g + 1
+        Loop
+    End If
+    If withPrefix Then body = "일금 " & body
+    CoNum_ToKoreanWon = body & "원정"
+    Exit Function
+Fail:
+    CoNum_ToKoreanWon = ""
+End Function
+
+' 네 자리 이하 숫자 글자 -> "일천이백삼십사". 0000이면 "".
+Private Function KoreanGroup(ByVal grp As String) As String
+    Const DIGIT_NAMES As String = "영일이삼사오육칠팔구"
+    Dim k As Long, dg As Long, outText As String, posNames As Variant
+    posNames = Array("천", "백", "십", "")
+    grp = Right$("0000" & grp, 4)
+    For k = 1 To 4
+        dg = Asc(Mid$(grp, k, 1)) - 48
+        If dg > 0 Then outText = outText & Mid$(DIGIT_NAMES, dg + 1, 1) & posNames(k - 1)
+    Next k
+    KoreanGroup = outText
+End Function
+
 '--- 시험 (Excel 안에서 직접 실행: 보기 > 직접 실행 창) --------------------
 Public Sub Test_CoNum()
     Dim f As Long, x As Double
@@ -127,6 +186,18 @@ Public Sub Test_CoNum()
     f = f + Chk("RoundHalfUp", CoNum_Near(CoNum_RoundHalfUp(2.5), 3) And CoNum_Near(CoNum_RoundHalfUp(3.5), 4))
     f = f + Chk("RoundHalfUp 오차", CoNum_Near(CoNum_RoundHalfUp(2.675, 2), 2.68))
     f = f + Chk("RoundHalfUp 음수", CoNum_Near(CoNum_RoundHalfUp(-2.5), -3))
+    f = f + Chk("TruncTo", CoNum_Near(CoNum_TruncTo(1234, 100), 1200) And CoNum_Near(CoNum_TruncTo(99, 100), 0))
+    f = f + Chk("TruncTo 음수", CoNum_Near(CoNum_TruncTo(-1234, 100), -1200))
+    f = f + Chk("TruncTo 소수", CoNum_Near(CoNum_TruncTo(1.239, 0.01), 1.23) And CoNum_Near(CoNum_TruncTo(0.3, 0.1), 0.3))
+    f = f + Chk("TruncTo 단위 0 이하", CoNum_TruncTo(12.5, 0) = 12.5 And CoNum_TruncTo(12.5, -1) = 12.5)
+    f = f + Chk("ToKoreanWon 영", CoNum_ToKoreanWon(0, False) = "영원정" And CoNum_ToKoreanWon(0) = "일금 영원정")
+    f = f + Chk("ToKoreanWon 천", CoNum_ToKoreanWon(1234) = "일금 일천이백삼십사원정")
+    f = f + Chk("ToKoreanWon 만", CoNum_ToKoreanWon(12345678) = "일금 일천이백삼십사만오천육백칠십팔원정")
+    f = f + Chk("ToKoreanWon 억", CoNum_ToKoreanWon(100000000) = "일금 일억원정")
+    f = f + Chk("ToKoreanWon 빈 자리", CoNum_ToKoreanWon(100010, False) = "일십만일십원정")
+    f = f + Chk("ToKoreanWon 조", CoNum_ToKoreanWon(2000000050000#, False) = "이조오만원정")
+    f = f + Chk("ToKoreanWon 음수·소수", CoNum_ToKoreanWon(-1) = "" And CoNum_ToKoreanWon(1.5) = "")
+    f = f + Chk("ToKoreanWon 너무 큼", CoNum_ToKoreanWon(1E+16) = "")
     Report "CoNum", f
 End Sub
 

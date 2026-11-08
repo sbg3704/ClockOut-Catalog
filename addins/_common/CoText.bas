@@ -9,6 +9,11 @@ Attribute VB_Name = "CoText"
 '   CoText_FileName / CoText_BaseName / CoText_Ext / CoText_ParentFolder
 '   CoText_ColLetter(28) -> "AB",  CoText_ColNumber("AB") -> 28
 '   Set parts = CoText_SplitClean("a, b,,c", ",")   ' -> a, b, c (앞뒤 공백·빈 조각 버림)
+'   CoText_CleanInvisible(" a" & ChrW(160) & " b ")    ' -> "a b" (NBSP·폭 0 글자·줄바꿈·겹친 공백 정리)
+'   CoText_SafeSheetName("1/2분기[안]")      ' -> "1_2분기_안_" (시트 이름 규칙: 금지 문자·31자·앞뒤 ')
+'   CoText_NaturalCompare("2호", "10호")      ' -> -1 (숫자는 크기로 비교, 대소문자 무시)
+'   If CoText_ParseDate("2026.11.08", d) Then ...   ' 년월일 순서 고정, 지역 설정과 무관
+'   CoText_JoinList(목록, ", ", "'", "'")    ' -> 'a', 'b'
 '   시험: Test_CoText (직접 실행 창에 결과가 나온다)
 ' 의존: 없음
 '==============================================================
@@ -174,6 +179,190 @@ Public Function CoText_ColNumber(ByVal s As String) As Long
     CoText_ColNumber = n
 End Function
 
+' 보이지 않는 글자를 정리한다.
+'   - NBSP(160)·전각 공백·폭 있는 각종 공백(U+2000~200A 등)·탭 -> 보통 공백
+'   - 폭 0 글자(ZWSP·ZWJ·BOM·단어 결합자)·소프트 하이픈·제어 문자 -> 지움
+'   - 줄바꿈(CR·LF): keepLineBreak=False면 공백, True면 줄바꿈 하나(vbLf, 셀 안 줄바꿈과 같음)로 남기고
+'     줄마다 앞뒤 공백을 지우며 빈 줄은 없앤다
+'   - 공백 여러 개는 하나로, 앞뒤 공백은 지운다
+Public Function CoText_CleanInvisible(ByVal s As String, Optional ByVal keepLineBreak As Boolean = False) As String
+    Dim i As Long, code As Long, c As String, buf As String, lines() As String, outText As String, ln As String
+    For i = 1 To Len(s)
+        c = Mid$(s, i, 1)
+        code = AscW(c) And &HFFFF&
+        Select Case code
+            Case 10, 13
+                If keepLineBreak Then buf = buf & vbLf Else buf = buf & " "
+            Case 9, 160, 5760, 8192 To 8202, 8239, 8287, 12288
+                buf = buf & " "
+            Case 0 To 31, 127, 173, 8203 To 8205, 8288, 65279
+                ' 지움
+            Case Else
+                buf = buf & c
+        End Select
+    Next i
+    If Not keepLineBreak Then CoText_CleanInvisible = CollapseSpaces(buf): Exit Function
+    lines = Split(buf, vbLf)
+    For i = LBound(lines) To UBound(lines)
+        ln = CollapseSpaces(lines(i))
+        If Len(ln) > 0 Then
+            If Len(outText) > 0 Then outText = outText & vbLf
+            outText = outText & ln
+        End If
+    Next i
+    CoText_CleanInvisible = outText
+End Function
+
+Private Function CollapseSpaces(ByVal t As String) As String
+    Do While InStr(1, t, "  ", vbBinaryCompare) > 0
+        t = Replace(t, "  ", " ")
+    Loop
+    CollapseSpaces = Trim$(t)
+End Function
+
+' 시트 이름 규칙에 맞춘 이름: 금지 문자(: \ / ? * [ ])는 replaceWith로 바꾸고, 앞뒤 '는 지우고,
+' 31자로 자른다. 비면 "Sheet". Excel이 쓰는 예약 이름 "History"는 뒤에 replaceWith를 붙인다.
+' 같은 이름의 시트가 이미 있는지는 보지 않는다(통합 문서를 봐야 하므로 호출 쪽이 확인).
+Public Function CoText_SafeSheetName(ByVal sheetName As String, Optional ByVal replaceWith As String = "_") As String
+    Const BAD_CHARS As String = ":\/?*[]"
+    Dim i As Long, c As String, outText As String
+    If Len(replaceWith) > 0 Then                      ' 바꿀 글자에 금지 문자가 섞여 있으면 _로
+        For i = 1 To Len(replaceWith)
+            If InStr(1, BAD_CHARS, Mid$(replaceWith, i, 1), vbBinaryCompare) > 0 Then replaceWith = "_": Exit For
+        Next i
+    End If
+    For i = 1 To Len(sheetName)
+        c = Mid$(sheetName, i, 1)
+        If InStr(1, BAD_CHARS, c, vbBinaryCompare) > 0 Then outText = outText & replaceWith Else outText = outText & c
+    Next i
+    outText = TrimQuotes(outText)
+    If Len(outText) > 31 Then outText = TrimQuotes(Left$(outText, 31))
+    If Len(outText) = 0 Then outText = "Sheet"
+    If StrComp(outText, "History", vbTextCompare) = 0 Then outText = Left$(outText & replaceWith, 31)
+    CoText_SafeSheetName = outText
+End Function
+
+Private Function TrimQuotes(ByVal t As String) As String
+    Do While Left$(t, 1) = "'"
+        t = Mid$(t, 2)
+    Loop
+    Do While Right$(t, 1) = "'"
+        t = Left$(t, Len(t) - 1)
+    Loop
+    TrimQuotes = t
+End Function
+
+' 자연 순서 비교: 숫자 부분은 크기로, 나머지는 대소문자 무시로 비교한다. a<b -> -1, 같으면 0, a>b -> 1.
+' "1호" < "2호" < "10호", "a2" < "a10". 앞의 0은 무시한다("007" = "7").
+Public Function CoText_NaturalCompare(ByVal a As String, ByVal b As String) As Long
+    Dim i As Long, j As Long, ra As String, rb As String, r As Long
+    i = 1: j = 1
+    Do While i <= Len(a) And j <= Len(b)
+        ra = TakeRun(a, i)
+        rb = TakeRun(b, j)
+        If IsDigitChar(Left$(ra, 1)) And IsDigitChar(Left$(rb, 1)) Then
+            r = CompareDigitRuns(ra, rb)
+        Else
+            r = StrComp(ra, rb, vbTextCompare)
+        End If
+        If r <> 0 Then CoText_NaturalCompare = r: Exit Function
+    Loop
+    If i <= Len(a) Then
+        CoText_NaturalCompare = 1                     ' a가 더 김
+    ElseIf j <= Len(b) Then
+        CoText_NaturalCompare = -1
+    End If
+End Function
+
+Private Function IsDigitChar(ByVal c As String) As Boolean
+    IsDigitChar = (Len(c) = 1 And c >= "0" And c <= "9")
+End Function
+
+' i부터 같은 종류(숫자 / 숫자 아님)가 이어지는 조각을 돌려주고 i를 그 다음으로 옮긴다.
+Private Function TakeRun(ByVal s As String, ByRef i As Long) As String
+    Dim start As Long, digitRun As Boolean
+    start = i
+    digitRun = IsDigitChar(Mid$(s, i, 1))
+    Do While i <= Len(s)
+        If IsDigitChar(Mid$(s, i, 1)) <> digitRun Then Exit Do
+        i = i + 1
+    Loop
+    TakeRun = Mid$(s, start, i - start)
+End Function
+
+Private Function CompareDigitRuns(ByVal x As String, ByVal y As String) As Long
+    Do While Len(x) > 1 And Left$(x, 1) = "0"
+        x = Mid$(x, 2)
+    Loop
+    Do While Len(y) > 1 And Left$(y, 1) = "0"
+        y = Mid$(y, 2)
+    Loop
+    If Len(x) <> Len(y) Then
+        If Len(x) < Len(y) Then CompareDigitRuns = -1 Else CompareDigitRuns = 1
+    Else
+        CompareDigitRuns = StrComp(x, y, vbBinaryCompare)
+    End If
+End Function
+
+' 글자를 날짜로 읽는다. 년월일 순서 고정(지역 설정과 무관). 읽으면 True, 못 읽으면 False(result는 0).
+'   받는 꼴: "2026.11.08", "2026-11-08", "2026/11/08", "2026. 11. 8."(띄어쓰기·끝 점), "20261108",
+'            두 자리 해 "26/11/08"(2000년대로 본다). 없는 날("2026.13.40", "2026.02.29")은 False.
+Public Function CoText_ParseDate(ByVal s As String, ByRef result As Date) As Boolean
+    Dim t As String, parts() As String, y As Long, m As Long, d As Long, k As Long
+    result = 0
+    t = Replace(Trim$(s), " ", "")
+    If Len(t) = 0 Then Exit Function
+    If Right$(t, 1) = "." Then t = Left$(t, Len(t) - 1)
+    If Len(t) = 8 And AllDigits(t) Then
+        y = CLng(Left$(t, 4)): m = CLng(Mid$(t, 5, 2)): d = CLng(Right$(t, 2))
+    Else
+        t = Replace(Replace(t, "-", "."), "/", ".")
+        parts = Split(t, ".")
+        If UBound(parts) - LBound(parts) <> 2 Then Exit Function
+        For k = LBound(parts) To UBound(parts)
+            If Len(parts(k)) = 0 Or Not AllDigits(parts(k)) Then Exit Function
+        Next k
+        Select Case Len(parts(0))
+            Case 4: y = CLng(parts(0))
+            Case 2: y = 2000 + CLng(parts(0))
+            Case Else: Exit Function
+        End Select
+        If Len(parts(1)) > 2 Or Len(parts(2)) > 2 Then Exit Function
+        m = CLng(parts(1)): d = CLng(parts(2))
+    End If
+    If y < 1000 Or m < 1 Or m > 12 Or d < 1 Or d > 31 Then Exit Function
+    result = DateSerial(y, m, d)
+    If Year(result) <> y Or Month(result) <> m Or Day(result) <> d Then result = 0: Exit Function   ' 2월 30일 등
+    CoText_ParseDate = True
+End Function
+
+Private Function AllDigits(ByVal t As String) As Boolean
+    Dim i As Long
+    If Len(t) = 0 Then Exit Function
+    For i = 1 To Len(t)
+        If Not IsDigitChar(Mid$(t, i, 1)) Then Exit Function
+    Next i
+    AllDigits = True
+End Function
+
+' 목록의 값마다 prefix·suffix를 붙여 delim으로 잇는다. 빈 목록이나 Nothing이면 "".
+' 개체(셀 등)는 건너뛰고, Null·Empty는 빈 글자로 본다. 숫자는 CStr이라 소수점은 PC 지역 설정을 따른다.
+Public Function CoText_JoinList(ByVal items As Collection, ByVal delim As String, _
+                                Optional ByVal prefix As String = "", Optional ByVal suffix As String = "") As String
+    Dim v As Variant, outText As String, first As Boolean, piece As String
+    If items Is Nothing Then Exit Function
+    first = True
+    For Each v In items
+        If Not IsObject(v) Then
+            If IsNull(v) Or IsEmpty(v) Or IsError(v) Then piece = "" Else piece = CStr(v)
+            If Not first Then outText = outText & delim
+            outText = outText & prefix & piece & suffix
+            first = False
+        End If
+    Next v
+    CoText_JoinList = outText
+End Function
+
 '--- 시험 (Excel 안에서 직접 실행: 보기 > 직접 실행 창) --------------------
 Public Sub Test_CoText()
     Dim f As Long, parts As Collection
@@ -204,6 +393,33 @@ Public Sub Test_CoText()
     f = f + Chk("ColLetter 범위 밖", CoText_ColLetter(0) = "" And CoText_ColLetter(16385) = "")
     f = f + Chk("ColNumber", CoText_ColNumber("ab") = 28 And CoText_ColNumber("XFD") = 16384)
     f = f + Chk("ColNumber 잘못", CoText_ColNumber("A1") = 0 And CoText_ColNumber("XFE") = 0 And CoText_ColNumber("") = 0)
+    f = f + Chk("CleanInvisible 공백", CoText_CleanInvisible("  a   b  ") = "a b")
+    f = f + Chk("CleanInvisible NBSP·전각", CoText_CleanInvisible("a" & ChrW(160) & "b" & ChrW(12288) & "c") = "a b c")
+    f = f + Chk("CleanInvisible 폭 0", CoText_CleanInvisible(ChrW(65279) & "a" & ChrW(8203) & "b" & ChrW(173)) = "ab")
+    f = f + Chk("CleanInvisible 줄바꿈", CoText_CleanInvisible("a" & vbCrLf & vbTab & "b") = "a b")
+    f = f + Chk("CleanInvisible 줄 유지", CoText_CleanInvisible(" a " & vbCrLf & vbCrLf & " b  c" & vbCr, True) = "a" & vbLf & "b c")
+    f = f + Chk("CleanInvisible 빔", CoText_CleanInvisible(vbTab & ChrW(160) & vbLf) = "")
+    f = f + Chk("CleanInvisible 한글", CoText_CleanInvisible(" 칼퇴" & ChrW(160) & "매니저 ") = "칼퇴 매니저")
+    Dim dt As Date, lst As Collection
+    f = f + Chk("SafeSheetName 금지 문자", CoText_SafeSheetName("1/2분기[안]") = "1_2분기_안_" And CoText_SafeSheetName("a:b?c*d\e", "-") = "a-b-c-d-e")
+    f = f + Chk("SafeSheetName 31자", Len(CoText_SafeSheetName(String$(40, "가"))) = 31)
+    f = f + Chk("SafeSheetName 따옴표·빔", CoText_SafeSheetName("'보고서'") = "보고서" And CoText_SafeSheetName("''") = "Sheet" And CoText_SafeSheetName("") = "Sheet")
+    f = f + Chk("SafeSheetName 예약", CoText_SafeSheetName("history") = "history_")
+    f = f + Chk("NaturalCompare 호", CoText_NaturalCompare("1호", "2호") = -1 And CoText_NaturalCompare("2호", "10호") = -1 And CoText_NaturalCompare("10호", "2호") = 1)
+    f = f + Chk("NaturalCompare 영문", CoText_NaturalCompare("a2", "a10") = -1 And CoText_NaturalCompare("A1", "a1") = 0)
+    f = f + Chk("NaturalCompare 길이·0", CoText_NaturalCompare("a", "a1") = -1 And CoText_NaturalCompare("007", "7") = 0 And CoText_NaturalCompare("", "") = 0)
+    f = f + Chk("ParseDate 점", CoText_ParseDate("2026.11.08", dt) And dt = DateSerial(2026, 11, 8))
+    f = f + Chk("ParseDate 하이픈", CoText_ParseDate("2026-11-08", dt) And dt = DateSerial(2026, 11, 8))
+    f = f + Chk("ParseDate 8자리", CoText_ParseDate("20261108", dt) And dt = DateSerial(2026, 11, 8))
+    f = f + Chk("ParseDate 두 자리 해", CoText_ParseDate("26/11/08", dt) And dt = DateSerial(2026, 11, 8))
+    f = f + Chk("ParseDate 띄어쓰기", CoText_ParseDate("2026. 11. 8.", dt) And dt = DateSerial(2026, 11, 8))
+    f = f + Chk("ParseDate 없는 날", Not CoText_ParseDate("2026.13.40", dt) And Not CoText_ParseDate("2026.02.29", dt) And CoText_ParseDate("2024.2.29", dt))
+    f = f + Chk("ParseDate 잘못", Not CoText_ParseDate("", dt) And Not CoText_ParseDate("2026.11", dt) And Not CoText_ParseDate("abc", dt))
+    Set lst = New Collection
+    f = f + Chk("JoinList 빔", CoText_JoinList(lst, ", ") = "" And CoText_JoinList(Nothing, ", ") = "")
+    lst.Add "a": lst.Add "b"
+    f = f + Chk("JoinList", CoText_JoinList(lst, ", ") = "a, b")
+    f = f + Chk("JoinList 따옴표", CoText_JoinList(lst, ", ", "'", "'") = "'a', 'b'")
     Report "CoText", f
 End Sub
 

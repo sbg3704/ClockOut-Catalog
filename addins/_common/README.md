@@ -17,13 +17,13 @@
 |---|---|---|---|
 | `ClockOutSettings.bas` | 표준 읽기 함수 `ClockOut_GetSetting(id, key, 기본값)` (`docs/03`의 표준 이름이라 Co 접두어 없음) | 없음 | |
 | `CoSetting.bas` | 설정 한 줄 읽기: 숫자(min/max 제한)·mm→pt·참거짓·글자·선택지 확인 | ClockOutSettings, CoNum | |
-| `CoGuard.bas` | ScreenUpdating·이벤트·계산·상태 표시줄 저장/복원 가드, 오류 안내 글, 안내·확인 창 | 없음 | |
+| `CoGuard.bas` | ScreenUpdating·이벤트·계산·상태 표시줄 저장/복원 가드, 오류 안내 글, 안내·확인 창, 글자 입력창(`CoGuard_AskText`) | 없음 | |
 | `CoRange.bas` | 활성 워크시트·선택 범위 안전 검사(행·열 전체, 숨김, 병합, 보호, 잠긴 칸), 마지막 행·열, 범위 → 2차원 배열 | 없음 | |
 | `CoShape.bas` | 선택 도형 얻기, 사진 안전하게 넣기·지우기, 칸에 맞추기, 범위 안 도형 | CoFitMath | |
 | `CoFitMath.bas` | 칸 안에 맞출 위치·크기 계산 `CoFitMath_CalcBox`(여백·비율·정렬) | 없음 | ○ `Test_CoFitMath` |
 | `CoFile.bas` | 파일·여러 파일·폴더·저장 위치 고르기(취소 = ""), 있는지 확인, 폴더 만들기, UTF-8 읽기·쓰기 | CoText | |
-| `CoText.bas` | 빈칸 판정, 시작·끝 비교, 나누기, 안전한 파일 이름, 경로 잇기·나누기, 열 이름↔번호 | 없음 | ○ `Test_CoText` |
-| `CoNum.bas` | 범위 제한, mm·cm·pt 변환, 지역 설정과 무관한 숫자 읽기, 보통 반올림, 0 나누기 방지 | 없음 | ○ `Test_CoNum` |
+| `CoText.bas` | 빈칸 판정, 보이지 않는 글자 정리(`CoText_CleanInvisible`), 시작·끝 비교, 나누기, 목록 잇기(`CoText_JoinList`), 안전한 파일 이름, 안전한 시트 이름(`CoText_SafeSheetName`), 자연 순서 비교(`CoText_NaturalCompare`), 날짜 읽기(`CoText_ParseDate`), 경로 잇기·나누기, 열 이름↔번호 | 없음 | ○ `Test_CoText` |
+| `CoNum.bas` | 범위 제한, mm·cm·pt 변환, 지역 설정과 무관한 숫자 읽기, 보통 반올림, 단위 절사(`CoNum_TruncTo`), 한글 금액(`CoNum_ToKoreanWon`), 0 나누기 방지 | 없음 | ○ `Test_CoNum` |
 
 ## 이름 규칙
 - 모듈은 `Co<분야>`, 공개 함수는 `Co<분야>_<동사·명사>`(예: `CoRange_GetSelection`). 여러 추가기능을 같이 켜도 이름이 겹치지 않고, 이름만 봐도 어느 모듈인지 안다.
