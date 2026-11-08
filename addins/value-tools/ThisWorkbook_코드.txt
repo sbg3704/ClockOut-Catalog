@@ -1,0 +1,19 @@
+' 기능: 추가기능(.xlam)을 켤 때 우클릭 메뉴("칼퇴 값 정리")를 만들고 끌 때 지운다.
+' 사용법: VBA 편집기에서 ThisWorkbook(현재_통합_문서)을 열어 아래 내용을 붙여 넣는다.
+'         (ThisWorkbook은 .bas로 가져올 수 없어 텍스트로 둔다.)
+' 의존: ValueTools.bas
+
+Private Sub Workbook_Open()
+    On Error Resume Next
+    ValueTools_Startup
+End Sub
+
+Private Sub Workbook_AddinUninstall()
+    On Error Resume Next
+    ValueTools_Shutdown
+End Sub
+
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    On Error Resume Next
+    ValueTools_Shutdown
+End Sub
