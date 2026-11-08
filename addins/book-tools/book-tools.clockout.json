@@ -1,0 +1,17 @@
+{
+  "spec": 0,
+  "id": "book-tools",
+  "name": "통합 문서 도구",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "시트 탭을 우클릭하면 '칼퇴 통합 문서 도구' 메뉴가 나옵니다. 숨은 시트 모두 보이기, 선택한 시트만 남기고 숨기기, 탭 이름순 정렬, 시트 이름 일괄 바꾸기, 공유 전 정리, 원클릭 백업, 선택한 시트를 PDF 하나로, 입력 칸 비우기(수식 유지).",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "자연 순서 비교·파일 처리·확인창에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "showVeryHidden", "label": "숨은 시트 보이기에 '완전히 숨김' 시트도 포함", "type": "bool", "default": false},
+    {"key": "prepZoom", "label": "공유 전 정리 배율", "type": "number", "unit": "%", "default": 100, "min": 10, "max": 400},
+    {"key": "clearOnlyUnlocked", "label": "입력 칸 비우기는 잠금 해제된 칸만", "type": "bool", "default": false, "help": "양식에서 입력 칸만 잠금 해제해 둔 경우 켜면 안전합니다"}
+  ]
+}

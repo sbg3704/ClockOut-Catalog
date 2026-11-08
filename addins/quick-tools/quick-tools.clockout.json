@@ -1,0 +1,16 @@
+{
+  "spec": 0,
+  "id": "quick-tools",
+  "name": "빠른 셀 도구",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "셀을 우클릭하면 '칼퇴 빠른 도구' 메뉴가 나옵니다. 값으로 고정, IFERROR로 감싸기, 부호 뒤집기, 앞뒤 글자 붙이기, 병합을 선택 영역 가운데로, 텍스트 날짜를 날짜로, 조건으로 칸 선택(병합·오류·수식·잠금 해제·빈 칸). 값을 바꾸는 도구는 실행 전에 확인을 받습니다.",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "선택 처리·확인창·날짜 해석에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "iferrorValue", "label": "IFERROR로 감쌀 때 오류 대신 보일 값", "type": "text", "default": "0", "help": "숫자나 \"글자\" 형태. 빈 칸으로 두려면 비워 두면 \"\"(빈 글자)가 됩니다"},
+    {"key": "dateFormat", "label": "날짜로 바꾼 칸의 표시 형식", "type": "text", "default": "yyyy-mm-dd"}
+  ]
+}

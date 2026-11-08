@@ -1,0 +1,17 @@
+{
+  "spec": 0,
+  "id": "visible-copy",
+  "name": "보이는 칸만 복사·붙여넣기",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "필터나 숨긴 줄·열이 있을 때 보이는 칸만 복사하고(Ctrl+Shift+C), 붙여넣을 땐 목적지의 보이는 줄·열에만 차례로 넣습니다(Ctrl+Shift+V). 엑셀 기본 붙여넣기가 숨은 줄까지 덮어쓰는 문제를 막습니다.",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "선택 처리·확인창·설정 읽기에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "vcPasteMode", "label": "붙여넣기 방식", "type": "choice", "options": ["전부", "값만"], "default": "전부", "help": "전부는 서식·수식까지, 값만은 값만"},
+    {"key": "keyCopy", "label": "보이는 칸만 복사 단축키", "type": "text", "default": "^+C", "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"},
+    {"key": "keyPaste", "label": "보이는 칸에만 붙여넣기 단축키", "type": "text", "default": "^+V", "help": "다음에 엑셀을 켤 때 적용"}
+  ]
+}
