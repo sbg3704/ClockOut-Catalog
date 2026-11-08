@@ -18,9 +18,25 @@
 - 외부 라이브러리 모음은 **id `vba-vendor`**(`catalog.json`의 `libraries`, 지금 `0.1.000`, 출처 `vendor/vba/SOURCES.md`).
 - 판은 공개 함수를 더하거나 동작을 바꿔 Release에 다시 올릴 때만 올린다(`docs/02` 1장 규칙). 이미 쓰는 공개 함수의 이름·인자는 바꾸지 않으므로 판이 올라가도 예전 추가기능이 깨지지 않는다.
 
+## 독립 xlam으로 부르기 (요청 003)
+공용 lib는 `clockout-lib.xlam`으로 따로 설치할 수 있다. 추가기능은 모듈을 넣지 않고 설치된 lib를 부른다.
+```vb
+Dim lib As Object
+Set lib = Application.Run("'clockout-lib.xlam'!CoLib_Api")      ' 판 확인: Application.Run("'clockout-lib.xlam'!CoLib_Version")
+If Not lib.CoRange_GetSelection(ws, rng, why) Then lib.CoGuard_Notice why: Exit Sub
+tok = lib.CoGuard_Begin()          ' 상태는 개체가 보관하고 토큰을 준다
+' ... 작업 ...
+lib.CoGuard_End tok
+```
+- 메서드 이름·인자는 Co 함수와 같다. 다른 점: `CoGuard_Begin`은 Long 토큰을 돌려주고 `CoGuard_End(토큰)`, `CoFitMath_CalcBox`는 Variant 배열(left, top, width, height, 못 맞추면 Empty), 상수는 `MsgTitle`·`FilterAll`·`FilterPictures`·`FilterExcel`·`FilterCsv`·`MmToPtFactor` 읽기 속성.
+- **lib에 공개 함수를 더하거나 인자를 바꾸면 `python3 tools/gen_colibapi.py`를 돌려 `CoLibApi.cls`도 같은 PR에 올린다**(`--check`로 빠졌는지 확인). 사용자 정의 형이나 ParamArray를 쓰는 함수는 스크립트의 `SPECIAL`에 손으로 감싸기를 더한다.
+- 판을 올릴 때 `CoLibEntry.bas`의 `LIB_VERSION`과 `clockout-lib.clockout.json`의 `version`을 함께 고친다.
+
 ## 모듈
 | 모듈 | 하는 일 | 의존 | 순수 계산 |
 |---|---|---|---|
+| `CoLibEntry.bas` | 바깥 입구(이 모듈만 Option Private Module 없음): `CoLib_Version()`, `CoLib_Api()`(CoLibApi 개체), `Test_CoLibApi` | CoLibApi | |
+| `CoLibApi.cls` | 공개 진입점 개체: 모든 Co 공개 함수를 같은 이름 메서드로 감쌈(+상수 읽기 속성). `tools/gen_colibapi.py`가 만든다 | 모든 Co 모듈 | |
 | `ClockOutSettings.bas` | 표준 읽기 함수 `ClockOut_GetSetting(id, key, 기본값)` (`docs/03`의 표준 이름이라 Co 접두어 없음) | 없음 | |
 | `CoSetting.bas` | 설정 한 줄 읽기: 숫자(min/max 제한)·mm→pt·참거짓·글자·선택지 확인 | ClockOutSettings, CoNum | |
 | `CoGuard.bas` | ScreenUpdating·이벤트·계산·상태 표시줄 저장/복원 가드, 오류 안내 글, 안내·확인 창, 글자 입력창(`CoGuard_AskText`) | 없음 | |
