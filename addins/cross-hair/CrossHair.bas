@@ -2,15 +2,17 @@ Attribute VB_Name = "CrossHair"
 '@clockout id=cross-hair name=십자 음영 host=excel
 '@desc 선택한 칸의 행과 열 전체에 음영을 넣어 큰 화면에서도 지금 어느 칸인지 한눈에 보이게 합니다.
 '==============================================================
-' 기능: 활성 셀과 같은 행·같은 열에 색을 칠한다. 셀 값은 건드리지 않고, 시트 전체에 조건부 서식 규칙
-'       하나(표시 전용)를 걸어 둔다. 끄거나 저장할 때 규칙을 지워 파일에 흔적이 남지 않는다.
+' 기능: 활성 셀과 같은 행·같은 열을 눈에 띄게 한다. 기본은 행의 위·아래 선과 열의 좌·우 선(칸의 배경색을
+'       덮지 않음)이고, 설정으로 연한 음영을 더하거나 음영만 쓸 수도 있다. 셀 값은 건드리지 않고, 시트 전체에
+'       표시 전용 조건부 서식 규칙을 걸어 둔다. 끄거나 저장할 때 규칙을 지워 파일에 흔적이 남지 않는다.
 ' 매크로:
 '   CrossHair_Toggle   켜기/끄기 (기본 단축키 Ctrl+Shift+H)
 ' 사용법: 단축키나 매크로로 켜면 선택을 옮길 때마다 따라온다. 색·행/열 선택·단축키는 칼퇴 설정창에서 바꾼다
 '         (선언: cross-hair.clockout.json, 값 저장: %APPDATA%\ClockOut\settings\cross-hair.json).
 ' 원리: 규칙 수식이 CELL("row")·CELL("col")(지금 선택한 칸)을 읽고, 선택이 바뀔 때마다 그 시트만 다시
 '       계산시켜 규칙이 새 위치를 읽게 한다. 서식 규칙이라 셀 값·수식은 바뀌지 않는다.
-' 한계: 조건부 서식 색은 칸의 원래 배경색을 덮는다(투명하지 않음). 보호된 시트에는 걸 수 없다.
+' 한계: 음영(채우기)은 엑셀 조건부 서식이라 투명하지 않아 칸의 원래 배경색을 덮는다. 그래서 기본은 선이다.
+'       보호된 시트에는 걸 수 없다.
 ' 의존: 공용 라이브러리 clockout-lib 0.1.001 이상(CoSetting_*, CoGuard_Notice). CoLibClient.bas가 연결한다.
 '==============================================================
 Option Explicit
@@ -20,11 +22,18 @@ Private Const ADDIN_NAME As String = "십자 음영"
 Private Const MIN_LIB As String = "0.1.001"          ' .clockout.json의 dependencies.min_version과 같게
 Private Const MARK As String = "ClockOutCross"      ' 규칙 수식 안의 표식: 우리가 만든 규칙을 찾는 데 쓴다
 Private Const DEFAULT_KEY As String = "^+H"
-Private Const DEFAULT_COLOR As String = "#FFF2A8"
+Private Const DEFAULT_LINE As String = "#4C8DF6"
+Private Const DEFAULT_FILL As String = "#EAF2FF"
+Private Const STYLE_LINE As String = "선"
+Private Const STYLE_BOTH As String = "선 + 연한 음영"
+Private Const STYLE_FILL As String = "음영만"
 
 Private mEvents As CrossHairEvents
 Private mOn As Boolean
-Private mColor As Long
+Private mLineColor As Long
+Private mFillColor As Long
+Private mUseLine As Boolean
+Private mUseFill As Boolean
 Private mRowOn As Boolean
 Private mColOn As Boolean
 Private mKey As String
@@ -35,11 +44,14 @@ Public Sub CrossHair_Toggle()
 End Sub
 
 Public Sub CrossHair_On(ByVal quiet As Boolean)
-    Dim api As Object, hex As String
+    Dim api As Object, st As String
     Set api = CoLibClient_Api(MIN_LIB, ADDIN_NAME, quiet)
     If api Is Nothing Then Exit Sub
-    hex = api.CoSetting_Text(ADDIN_ID, "color", DEFAULT_COLOR)
-    mColor = ParseHexColor(hex, ParseHexColor(DEFAULT_COLOR, RGB(255, 242, 168)))
+    st = api.CoSetting_Choice(ADDIN_ID, "style", STYLE_LINE, STYLE_LINE, STYLE_BOTH, STYLE_FILL)
+    mUseLine = (st <> STYLE_FILL)
+    mUseFill = (st <> STYLE_LINE)
+    mLineColor = ParseHexColor(api.CoSetting_Text(ADDIN_ID, "lineColor", DEFAULT_LINE), RGB(76, 141, 246))
+    mFillColor = ParseHexColor(api.CoSetting_Text(ADDIN_ID, "fillColor", DEFAULT_FILL), RGB(234, 242, 255))
     mRowOn = api.CoSetting_Bool(ADDIN_ID, "showRow", True)
     mColOn = api.CoSetting_Bool(ADDIN_ID, "showCol", True)
     If Not mRowOn And Not mColOn Then mRowOn = True: mColOn = True     ' 둘 다 끄면 의미가 없어 둘 다 켠다
@@ -105,23 +117,55 @@ Public Sub CrossHair_Shutdown()
 End Sub
 
 '--- 이 추가기능만의 도우미 ---------------------------------------
-Private Function RuleFormula() As String
+' 규칙 수식. which: "row"(행만), "col"(열만), "both"(행 또는 열).
+Private Function RuleFormula(ByVal which As String) As String
     Dim parts As String
-    If mRowOn Then parts = "ROW()=CELL(""row"")"
-    If mColOn Then
-        If Len(parts) > 0 Then parts = parts & ","
-        parts = parts & "COLUMN()=CELL(""col"")"
+    If which = "row" Then
+        parts = "ROW()=CELL(""row"")"
+    ElseIf which = "col" Then
+        parts = "COLUMN()=CELL(""col"")"
+    Else
+        parts = "OR(ROW()=CELL(""row""),COLUMN()=CELL(""col""))"
     End If
-    If mRowOn And mColOn Then parts = "OR(" & parts & ")"
     RuleFormula = "=AND(LEN(""" & MARK & """)>0," & parts & ")"
 End Function
 
 Private Sub AddRule(ByVal ws As Worksheet)
-    Dim fc As Object
-    Set fc = ws.Cells.FormatConditions.Add(Type:=xlExpression, Formula1:=RuleFormula())
-    fc.SetFirstPriority
-    fc.StopIfTrue = False                              ' 사용자가 만든 다른 규칙(글자색 등)도 그대로 보이게
-    fc.Interior.Color = mColor
+    Dim which As String
+    ' 먼저 건 규칙이 아래로 가므로 음영 -> 선 순서로 건다(선이 항상 위에 보이게 위로 올린다).
+    If mUseFill Then
+        If mRowOn And mColOn Then
+            which = "both"
+        ElseIf mRowOn Then
+            which = "row"
+        Else
+            which = "col"
+        End If
+        With ws.Cells.FormatConditions.Add(Type:=xlExpression, Formula1:=RuleFormula(which))
+            .SetFirstPriority
+            .StopIfTrue = False                        ' 사용자가 만든 다른 규칙(글자색 등)도 그대로 보이게
+            .Interior.Color = mFillColor
+        End With
+    End If
+    If mUseLine Then
+        If mRowOn Then AddLineRule ws, "row", xlTop, xlBottom
+        If mColOn Then AddLineRule ws, "col", xlLeft, xlRight
+    End If
+End Sub
+
+Private Sub AddLineRule(ByVal ws As Worksheet, ByVal which As String, ByVal side1 As Long, ByVal side2 As Long)
+    With ws.Cells.FormatConditions.Add(Type:=xlExpression, Formula1:=RuleFormula(which))
+        .SetFirstPriority
+        .StopIfTrue = False
+        With .Borders(side1)
+            .LineStyle = xlContinuous
+            .Color = mLineColor
+        End With
+        With .Borders(side2)
+            .LineStyle = xlContinuous
+            .Color = mLineColor
+        End With
+    End With
 End Sub
 
 Private Function HasRule(ByVal ws As Worksheet) As Boolean
@@ -167,11 +211,10 @@ Public Sub Test_CrossHair()
     f = f + Chk("색 코드 # 없이", ParseHexColor("00FF00", 0) = RGB(0, 255, 0))
     f = f + Chk("색 코드 잘못", ParseHexColor("빨강", 7) = 7)
     f = f + Chk("색 코드 자리수", ParseHexColor("#FFF", 9) = 9)
-    mRowOn = True: mColOn = True
-    f = f + Chk("행+열 수식", InStr(RuleFormula(), "OR(ROW()=CELL(""row""),COLUMN()=CELL(""col""))") > 0)
-    mColOn = False
-    f = f + Chk("행만 수식", InStr(RuleFormula(), "ROW()=CELL(""row"")") > 0 And InStr(RuleFormula(), "COLUMN") = 0)
-    f = f + Chk("표식", InStr(RuleFormula(), MARK) > 0)
+    f = f + Chk("행+열 수식", InStr(RuleFormula("both"), "OR(ROW()=CELL(""row""),COLUMN()=CELL(""col""))") > 0)
+    f = f + Chk("행만 수식", InStr(RuleFormula("row"), "ROW()=CELL(""row"")") > 0 And InStr(RuleFormula("row"), "COLUMN") = 0)
+    f = f + Chk("열만 수식", InStr(RuleFormula("col"), "COLUMN()=CELL(""col"")") > 0 And InStr(RuleFormula("col"), "ROW") = 0)
+    f = f + Chk("표식", InStr(RuleFormula("row"), MARK) > 0)
     If f = 0 Then
         Debug.Print "CrossHair 시험: 모두 통과"
         MsgBox "CrossHair 시험: 모두 통과", vbInformation, "칼퇴"
