@@ -54,15 +54,17 @@ Write-Host "태그: $tag"; Write-Host "SHA-256: $sha"; Write-Host "주소: $url"
 # 3) Release 업로드
 if ($DryRun) { Write-Host "[DryRun] GitHub에 올리지 않고 catalog.json도 바꾸지 않았습니다." -ForegroundColor Yellow; exit 0 }
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) { Stop-With "gh(GitHub CLI)가 없습니다. winget install --id GitHub.cli -e 후 gh auth login" 2 }
-& gh auth status *> $null
+$ErrorActionPreference = 'Continue'   # gh가 stderr에 쓰는 것을 오류로 취급하지 않게(PowerShell 5.1)
+& gh auth status 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) { Stop-With "gh 로그인이 필요합니다: gh auth login" 3 }
-& gh release view $tag --repo $repoSlug *> $null
+& gh release view $tag --repo $repoSlug 2>&1 | Out-Null
 if ($LASTEXITCODE -eq 0) {
     & gh release upload $tag $zip --clobber --repo $repoSlug
 } else {
     & gh release create $tag $zip --repo $repoSlug --title "$($entry.name) $($entry.version)" --notes ([string]$decl.description)
 }
 if ($LASTEXITCODE -ne 0) { Stop-With "Release 업로드에 실패했습니다." 4 }
+$ErrorActionPreference = 'Stop'
 
 # 4) catalog.json 갱신(UTF-8, BOM 없음)
 $catPath = Join-Path $repo 'catalog.json'
