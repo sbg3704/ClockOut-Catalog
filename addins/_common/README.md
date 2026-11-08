@@ -22,8 +22,8 @@
 | `CoShape.bas` | 선택 도형 얻기, 사진 안전하게 넣기·지우기, 칸에 맞추기, 범위 안 도형 | CoFitMath | |
 | `CoFitMath.bas` | 칸 안에 맞출 위치·크기 계산 `CoFitMath_CalcBox`(여백·비율·정렬) | 없음 | ○ `Test_CoFitMath` |
 | `CoFile.bas` | 파일·여러 파일·폴더·저장 위치 고르기(취소 = ""), 있는지 확인, 폴더 만들기, UTF-8 읽기·쓰기 | CoText | |
-| `CoText.bas` | 빈칸 판정, 시작·끝 비교, 나누기, 안전한 파일 이름, 경로 잇기·나누기, 열 이름↔번호 | 없음 | ○ `Test_CoText` |
-| `CoNum.bas` | 범위 제한, mm·cm·pt 변환, 지역 설정과 무관한 숫자 읽기, 보통 반올림, 0 나누기 방지 | 없음 | ○ `Test_CoNum` |
+| `CoText.bas` | 빈칸 판정, 보이지 않는 글자 정리(`CoText_CleanInvisible`), 시작·끝 비교, 나누기, 안전한 파일 이름, 경로 잇기·나누기, 열 이름↔번호 | 없음 | ○ `Test_CoText` |
+| `CoNum.bas` | 범위 제한, mm·cm·pt 변환, 지역 설정과 무관한 숫자 읽기, 보통 반올림, 단위 절사(`CoNum_TruncTo`), 한글 금액(`CoNum_ToKoreanWon`), 0 나누기 방지 | 없음 | ○ `Test_CoNum` |
 
 ## 이름 규칙
 - 모듈은 `Co<분야>`, 공개 함수는 `Co<분야>_<동사·명사>`(예: `CoRange_GetSelection`). 여러 추가기능을 같이 켜도 이름이 겹치지 않고, 이름만 봐도 어느 모듈인지 안다.

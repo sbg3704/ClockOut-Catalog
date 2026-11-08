@@ -9,6 +9,7 @@ Attribute VB_Name = "CoText"
 '   CoText_FileName / CoText_BaseName / CoText_Ext / CoText_ParentFolder
 '   CoText_ColLetter(28) -> "AB",  CoText_ColNumber("AB") -> 28
 '   Set parts = CoText_SplitClean("a, b,,c", ",")   ' -> a, b, c (앞뒤 공백·빈 조각 버림)
+'   CoText_CleanInvisible(" a" & ChrW(160) & " b ")    ' -> "a b" (NBSP·폭 0 글자·줄바꿈·겹친 공백 정리)
 '   시험: Test_CoText (직접 실행 창에 결과가 나온다)
 ' 의존: 없음
 '==============================================================
@@ -174,6 +175,47 @@ Public Function CoText_ColNumber(ByVal s As String) As Long
     CoText_ColNumber = n
 End Function
 
+' 보이지 않는 글자를 정리한다.
+'   - NBSP(160)·전각 공백·폭 있는 각종 공백(U+2000~200A 등)·탭 -> 보통 공백
+'   - 폭 0 글자(ZWSP·ZWJ·BOM·단어 결합자)·소프트 하이픈·제어 문자 -> 지움
+'   - 줄바꿈(CR·LF): keepLineBreak=False면 공백, True면 줄바꿈 하나(vbLf, 셀 안 줄바꿈과 같음)로 남기고
+'     줄마다 앞뒤 공백을 지우며 빈 줄은 없앤다
+'   - 공백 여러 개는 하나로, 앞뒤 공백은 지운다
+Public Function CoText_CleanInvisible(ByVal s As String, Optional ByVal keepLineBreak As Boolean = False) As String
+    Dim i As Long, code As Long, c As String, buf As String, lines() As String, outText As String, ln As String
+    For i = 1 To Len(s)
+        c = Mid$(s, i, 1)
+        code = AscW(c) And &HFFFF&
+        Select Case code
+            Case 10, 13
+                If keepLineBreak Then buf = buf & vbLf Else buf = buf & " "
+            Case 9, 160, 5760, 8192 To 8202, 8239, 8287, 12288
+                buf = buf & " "
+            Case 0 To 31, 127, 173, 8203 To 8205, 8288, 65279
+                ' 지움
+            Case Else
+                buf = buf & c
+        End Select
+    Next i
+    If Not keepLineBreak Then CoText_CleanInvisible = CollapseSpaces(buf): Exit Function
+    lines = Split(buf, vbLf)
+    For i = LBound(lines) To UBound(lines)
+        ln = CollapseSpaces(lines(i))
+        If Len(ln) > 0 Then
+            If Len(outText) > 0 Then outText = outText & vbLf
+            outText = outText & ln
+        End If
+    Next i
+    CoText_CleanInvisible = outText
+End Function
+
+Private Function CollapseSpaces(ByVal t As String) As String
+    Do While InStr(1, t, "  ", vbBinaryCompare) > 0
+        t = Replace(t, "  ", " ")
+    Loop
+    CollapseSpaces = Trim$(t)
+End Function
+
 '--- 시험 (Excel 안에서 직접 실행: 보기 > 직접 실행 창) --------------------
 Public Sub Test_CoText()
     Dim f As Long, parts As Collection
@@ -204,6 +246,13 @@ Public Sub Test_CoText()
     f = f + Chk("ColLetter 범위 밖", CoText_ColLetter(0) = "" And CoText_ColLetter(16385) = "")
     f = f + Chk("ColNumber", CoText_ColNumber("ab") = 28 And CoText_ColNumber("XFD") = 16384)
     f = f + Chk("ColNumber 잘못", CoText_ColNumber("A1") = 0 And CoText_ColNumber("XFE") = 0 And CoText_ColNumber("") = 0)
+    f = f + Chk("CleanInvisible 공백", CoText_CleanInvisible("  a   b  ") = "a b")
+    f = f + Chk("CleanInvisible NBSP·전각", CoText_CleanInvisible("a" & ChrW(160) & "b" & ChrW(12288) & "c") = "a b c")
+    f = f + Chk("CleanInvisible 폭 0", CoText_CleanInvisible(ChrW(65279) & "a" & ChrW(8203) & "b" & ChrW(173)) = "ab")
+    f = f + Chk("CleanInvisible 줄바꿈", CoText_CleanInvisible("a" & vbCrLf & vbTab & "b") = "a b")
+    f = f + Chk("CleanInvisible 줄 유지", CoText_CleanInvisible(" a " & vbCrLf & vbCrLf & " b  c" & vbCr, True) = "a" & vbLf & "b c")
+    f = f + Chk("CleanInvisible 빔", CoText_CleanInvisible(vbTab & ChrW(160) & vbLf) = "")
+    f = f + Chk("CleanInvisible 한글", CoText_CleanInvisible(" 칼퇴" & ChrW(160) & "매니저 ") = "칼퇴 매니저")
     Report "CoText", f
 End Sub
 
