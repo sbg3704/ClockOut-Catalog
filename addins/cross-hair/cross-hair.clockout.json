@@ -23,22 +23,36 @@
         "선 + 연한 음영",
         "음영만"
       ],
-      "default": "선",
-      "help": "선: 행의 위·아래, 열의 좌·우 선(칸 배경색을 덮지 않음). 음영은 칸의 원래 배경색을 덮습니다"
+      "default": "선 + 연한 음영",
+      "help": "선: 행의 위·아래, 열의 좌·우 선. 음영은 칸의 원래 배경색을 덮으니 아주 연한 색을 권합니다"
     },
     {
       "key": "lineColor",
-      "label": "선 색",
+      "label": "보조 줄 선 색",
       "type": "text",
-      "default": "#4C8DF6",
-      "help": "#RRGGBB 색 코드(예: 파랑 #4C8DF6, 빨강 #E5484D, 초록 #30A46C)"
+      "default": "#C5E4A8",
+      "help": "#RRGGBB 색 코드(예: 연한 연두 #C5E4A8)"
     },
     {
       "key": "fillColor",
-      "label": "음영 색",
+      "label": "보조 줄 음영 색(같은 행·열의 칸)",
       "type": "text",
-      "default": "#EAF2FF",
-      "help": "#RRGGBB 색 코드(예: 연한 파랑 #EAF2FF, 연한 노랑 #FFF6CC)"
+      "default": "#F0F9E6",
+      "help": "#RRGGBB 색 코드. 선택한 칸보다 연하게 두세요(예: #F0F9E6)"
+    },
+    {
+      "key": "activeFill",
+      "label": "선택한 칸에 색 넣기",
+      "type": "bool",
+      "default": true,
+      "help": "끄면 선택한 칸은 엑셀의 기본 테두리만 보입니다"
+    },
+    {
+      "key": "activeColor",
+      "label": "선택한 칸 색",
+      "type": "text",
+      "default": "#B7E58E",
+      "help": "#RRGGBB 색 코드. 보조 줄보다 진하게(예: 연두 #B7E58E)"
     },
     {
       "key": "showRow",

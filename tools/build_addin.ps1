@@ -120,12 +120,32 @@ try {
         return $b
     }
 
+    # .frm은 가져오기 대신 폼을 새로 만들어 코드를 넣는다(.frx 없는 코드 전용 폼은 Import가 실패한다).
+    function Import-Source($project, [string]$path) {
+        if ([IO.Path]::GetExtension($path) -ne '.frm') { $null = $project.VBComponents.Import($path); return }
+        $ftext = $cp949.GetString([IO.File]::ReadAllBytes($path))
+        $fname = [IO.Path]::GetFileNameWithoutExtension($path)
+        if ($ftext -match '(?m)^Attribute VB_Name = "([^"]+)"') { $fname = $Matches[1] }
+        $fcap = $fname
+        if ($ftext -match '(?m)^\s*Caption\s*=\s*"([^"]*)"') { $fcap = $Matches[1] }
+        $at = $ftext.LastIndexOf('Attribute VB_Exposed')
+        if ($at -lt 0) { throw "폼 파일에 Attribute 줄이 없습니다: $path" }
+        $eol = $ftext.IndexOf("`n", $at)
+        $fcode = $ftext.Substring($eol + 1)
+        $comp = $project.VBComponents.Add(3)
+        $comp.Name = $fname
+        try { $comp.Properties.Item('Caption').Value = $fcap } catch {}
+        $cm = $comp.CodeModule
+        if ($cm.CountOfLines -gt 0 -and $cm.Lines(1, $cm.CountOfLines) -match 'Option Explicit') { $fcode = $fcode -replace '(?m)^Option Explicit\r?\n', '' }
+        $cm.AddFromString($fcode)
+    }
+
     # --- 1) 빌드 통합 문서: 가져오기 + 컴파일 ---
     $wb = New-Book $xl
     $vp = $wb.VBProject
     try { $vp.Name = ('ClockOut_' + ($outId -replace '[^A-Za-z0-9]', '_')) } catch {}
     foreach ($m in $modules) {
-        try { $null = $vp.VBComponents.Import($m.Path) }
+        try { Import-Source $vp $m.Path }
         catch { Fail "가져오기 실패: $($m.Src)`n  $($_.Exception.Message)" }
     }
     if ($twFile) {
@@ -180,7 +200,7 @@ try {
                 $tpaths += $tp
             }
             $tb = New-Book $xl
-            foreach ($tp in $tpaths) { $null = $tb.VBProject.VBComponents.Import($tp) }
+            foreach ($tp in $tpaths) { Import-Source $tb.VBProject $tp }
             $failed = 0
             foreach ($t in $tests) {
                 Remove-Item $log -ErrorAction SilentlyContinue

@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00A3F34D} SelStatsForm 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} SelStatsForm 
    Caption         =   "선택 요약"
    ClientHeight    =   2400
    ClientLeft      =   45
@@ -15,7 +15,7 @@ Attribute VB_Exposed = False
 '==============================================================
 ' 기능: 선택 요약 창. 이름 글자와 큰 숫자 글자를 줄마다 만들어 보여 주는 화면만 맡는다(계산은 SelStatsCalc.bas).
 ' 사용법: Build(줄 이름 배열, 큰 글자 크기)로 한 번 만든 뒤 SetValue(줄 번호, 글자)로 값을 바꾼다.
-'         컨트롤은 코드로 만들어서 .frx 파일이 필요 없다.
+'         컨트롤은 코드로 만들어서 .frx 파일이 필요 없다. build_addin.ps1은 이 파일에서 폼을 새로 만들고 코드를 넣는다.
 ' 의존: SelStats.bas (창을 닫으면 SelStats_FormClosed를 부른다)
 '==============================================================
 Option Explicit
