@@ -99,7 +99,7 @@ End Sub
 '--- 시트 이름 일괄 바꾸기 -------------------------------------------
 Public Sub BookTools_RenameSheets()
     Dim api As Object, wb As Workbook, targets As Collection, sh As Object, f As String, r As String, nn As String
-    Dim plan As New Collection, n As Long, skipped As Long, o As Object, cand As String
+    Dim plan As New Collection, n As Long, skipped As Long, o As Variant, cand As String
     Set api = BT_Api()
     If api Is Nothing Then Exit Sub
     Set wb = ActiveWorkbook
