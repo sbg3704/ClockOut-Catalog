@@ -14,6 +14,7 @@ Attribute VB_Name = "CoGuard"
 '   msg = CoGuard_ErrText("사진을 넣는 중")  ' 반드시 맨 먼저(다음 줄의 On Error가 Err를 지운다)
 '   CoGuard_End st
 '   CoGuard_Notice msg
+'   If CoGuard_AskText("이름을 넣으세요", txt) Then ...   ' 글자 입력창, 취소면 False
 ' 의존: 없음(Excel Application만). Option Private Module이라 시트 함수·매크로 목록에 안 보인다.
 '==============================================================
 Option Explicit
@@ -99,4 +100,21 @@ End Sub
 ' 예/아니오를 묻는다. 기본 단추는 "아니오"(실수로 Enter를 눌러도 진행하지 않게).
 Public Function CoGuard_Ask(ByVal msg As String, Optional ByVal title As String = CO_MSG_TITLE) As Boolean
     CoGuard_Ask = (MsgBox(msg, vbQuestion + vbYesNo + vbDefaultButton2, title) = vbYes)
+End Function
+
+' 글자 입력창을 띄운다. 확인을 누르면 True와 입력한 글자(빈 글자일 수 있음), 취소하면 False("").
+' 입력한 글자가 화면에 그대로 보이므로 암호처럼 가려야 하는 값에는 맞지 않다(가리려면 사용자 정의 폼이 필요).
+Public Function CoGuard_AskText(ByVal msg As String, ByRef result As String, _
+                                Optional ByVal title As String = CO_MSG_TITLE, _
+                                Optional ByVal defaultText As String = "") As Boolean
+    Dim v As Variant
+    result = ""
+    On Error GoTo Fail
+    v = Application.InputBox(Prompt:=msg, Title:=title, Default:=defaultText, Type:=2)   ' 2 = 글자
+    If VarType(v) = vbBoolean Then Exit Function          ' 취소(False)
+    result = CStr(v)
+    CoGuard_AskText = True
+    Exit Function
+Fail:
+    result = ""
 End Function
