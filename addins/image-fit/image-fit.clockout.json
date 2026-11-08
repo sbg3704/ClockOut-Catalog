@@ -1,0 +1,18 @@
+{
+  "spec": 0,
+  "id": "image-fit",
+  "name": "사진 셀에 맞추기",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "선택한 셀(병합 셀 포함)에 사진을 맞춰 넣습니다. 사진 파일 고르기(Ctrl+Shift+A), 클립보드 사진 붙여넣고 맞추기(Ctrl+Shift+V), 이미 올려 둔 사진 맞추기 3가지 기능이 있고, 여백·비율 유지·정렬·단축키는 설정에서 바꿀 수 있습니다. 실행 후 Ctrl+Z로 되돌릴 수 없으니 필요하면 사진을 지우세요.",
+  "params": [
+    {"key": "margin", "label": "테두리 여백", "type": "number", "unit": "mm", "default": 0.8, "min": 0, "max": 20, "help": "셀 테두리와 사진 사이 간격(사방 같음). 칸이 작으면 짧은 변의 1/4까지만 적용"},
+    {"key": "keepRatio", "label": "사진 비율 유지", "type": "bool", "default": true, "help": "끄면 칸에 꽉 차게 늘려 찌그러질 수 있음"},
+    {"key": "align", "label": "정렬(비율 유지 시)", "type": "choice", "options": ["가운데", "왼쪽 위"], "default": "가운데"},
+    {"key": "fitArea", "label": "맞출 범위", "type": "choice", "options": ["선택 영역 전체", "선택한 첫 칸(병합 포함)"], "default": "선택 영역 전체"},
+    {"key": "placement", "label": "셀을 움직일 때", "type": "choice", "options": ["셀과 함께 이동 및 크기 변경", "셀과 함께 이동", "고정"], "default": "셀과 함께 이동 및 크기 변경"},
+    {"key": "keyInsert", "label": "사진 파일 넣기 단축키", "type": "text", "default": "^+A", "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"},
+    {"key": "keyPaste", "label": "붙여넣고 맞추기 단축키", "type": "text", "default": "^+V", "help": "위와 같음"}
+  ]
+}

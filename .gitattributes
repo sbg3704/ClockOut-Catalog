@@ -1,0 +1,15 @@
+* text=auto
+# VBA 내보낸 모듈은 VBE가 CRLF를 요구
+*.bas text eol=crlf
+*.cls text eol=crlf
+*.frm text eol=crlf
+*.lsp text eol=crlf
+# 바이너리
+*.xlam binary
+*.xlsm binary
+*.xlsx binary
+*.ppam binary
+*.dotm binary
+*.frx binary
+*.fas binary
+*.vlx binary
