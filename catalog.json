@@ -1,6 +1,20 @@
 {
-  "spec": 0,
-  "updated": "2026-11-08",
-  "addins": [],
-  "packs": []
+    "spec":  0,
+    "updated":  "2026-11-08",
+    "addins":  [
+                   {
+                       "id":  "image-fit",
+                       "name":  "사진 셀에 맞추기",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "description":  "선택한 셀(병합 셀 포함)에 사진을 맞춰 넣습니다. 사진 파일 고르기(Ctrl+Shift+A), 클립보드 사진 붙여넣고 맞추기(Ctrl+Shift+V), 이미 올려 둔 사진 맞추기 3가지 기능이 있고, 여백·비율 유지·정렬·단축키는 설정에서 바꿀 수 있습니다. 실행 후 Ctrl+Z로 되돌릴 수 없으니 필요하면 사진을 지우세요.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/image-fit-0.1.000/image-fit.zip",
+                       "sha256":  "cb327ae0a9b3df5dce9ab8ae7de1480d01e2da742758a5d3bd7046b8a5528eb9",
+                       "size":  151731
+                   }
+               ],
+    "packs":  [
+
+              ]
 }
