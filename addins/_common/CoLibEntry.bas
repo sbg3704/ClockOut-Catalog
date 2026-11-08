@@ -3,7 +3,7 @@ Attribute VB_Name = "CoLibEntry"
 ' 기능: 칼퇴 공용 라이브러리(clockout-lib.xlam)의 바깥 입구. 이 모듈만 Option Private Module이 없어
 '       다른 통합 문서(추가기능)가 Application.Run으로 부를 수 있다.
 ' 사용법(추가기능 쪽):
-'   ver = Application.Run("'clockout-lib.xlam'!CoLib_Version")     ' "0.1.000" (clockout-lib.clockout.json의 version과 같음)
+'   ver = Application.Run("'clockout-lib.xlam'!CoLib_Version")     ' "0.1.001" (clockout-lib.clockout.json의 version과 같음)
 '   Set lib = Application.Run("'clockout-lib.xlam'!CoLib_Api")     ' CoLibApi 개체(하나만 만들어 계속 같은 것을 돌려줌)
 '   lib.CoText_CleanInvisible(s) 처럼 늦은 바인딩(Dim lib As Object)으로 부른다. 메서드 목록은 CoLibApi.cls.
 '   시험: Test_CoLibApi
@@ -12,7 +12,7 @@ Attribute VB_Name = "CoLibEntry"
 '==============================================================
 Option Explicit
 
-Private Const LIB_VERSION As String = "0.1.000"
+Private Const LIB_VERSION As String = "0.1.001"
 Private mApi As CoLibApi
 
 Public Function CoLib_Version() As String
@@ -30,7 +30,7 @@ Public Sub Test_CoLibApi()
     Dim f As Long, lib As Object, x As Double, dt As Date, txt As String, v As Variant, tok As Long
     Set lib = Application.Run("'" & ThisWorkbook.Name & "'!CoLib_Api")
     f = f + Chk("같은 개체", lib Is CoLib_Api())
-    f = f + Chk("판", Application.Run("'" & ThisWorkbook.Name & "'!CoLib_Version") = "0.1.000")
+    f = f + Chk("판", Application.Run("'" & ThisWorkbook.Name & "'!CoLib_Version") = "0.1.001")
     f = f + Chk("CoNum_Clamp", lib.CoNum_Clamp(25, 0, 20) = 20)
     f = f + Chk("CoText_ColLetter", lib.CoText_ColLetter(28) = "AB")
     f = f + Chk("CoText_CleanInvisible", lib.CoText_CleanInvisible("  a   b ") = "a b")
