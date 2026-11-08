@@ -90,6 +90,7 @@ Private Function DateAreas(ByVal api As Object, ByVal areas As Collection, ByVal
                             If doWrite Then
                                 ar.Cells(i, j).NumberFormat = fmt
                                 ar.Cells(i, j).Value2 = CDbl(d)
+                                If ar.Cells(i, j).Text Like "#*" And InStr(ar.Cells(i, j).Text, "##") > 0 Then ar.Columns(j).EntireColumn.AutoFit   ' 좁아서 ####이면 열을 넓힌다
                             End If
                         End If
                     End If
@@ -142,6 +143,7 @@ Public Sub QuickMisc_SelectSpecial()
                 End If
             Next cel
         Case "5": Set hit = scope.SpecialCells(xlCellTypeBlanks)
+                  If Not hit Is Nothing Then Set hit = DropMerged(hit)         ' 병합 칸은 빈 칸으로 세지 않는다
         Case "6": Set hit = scope.SpecialCells(xlCellTypeVisible)
         Case Else
             api.CoGuard_Notice "1~6 중 하나를 입력하세요.": Exit Sub
@@ -151,3 +153,17 @@ Public Sub QuickMisc_SelectSpecial()
     hit.Select
     Application.StatusBar = "조건에 맞는 칸 " & hit.CountLarge & "칸을 골랐습니다."
 End Sub
+
+' 범위에서 병합된 칸을 뺀 나머지(없으면 Nothing). 칸이 너무 많으면 그대로 돌려준다.
+Private Function DropMerged(ByVal rng As Range) As Range
+    Dim cel As Range, keep As Range, cnt As Long
+    If rng.CountLarge > MAX_SCAN Then Set DropMerged = rng: Exit Function
+    For Each cel In rng.Cells
+        If Not cel.MergeCells Then
+            cnt = cnt + 1
+            If keep Is Nothing Then Set keep = cel Else Set keep = Union(keep, cel)
+            If cnt >= 5000 Then Exit For
+        End If
+    Next cel
+    Set DropMerged = keep
+End Function

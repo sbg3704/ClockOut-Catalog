@@ -167,5 +167,9 @@ Public Sub Test_VisibleCopy()
     If r.Count <> 3 Then f = f + 1
     If r(1) <> 1 Or r(2) <> 3 Or r(3) <> 5 Then f = f + 1
     wb.Close SaveChanges:=False
-    If f = 0 Then MsgBox "VisibleCopy 시험: 모두 통과", vbInformation, "칼퇴" Else MsgBox "VisibleCopy 시험: 실패 " & f & "건", vbExclamation, "칼퇴"
+    If f = 0 Then
+        MsgBox "VisibleCopy 시험: 모두 통과", vbInformation, "칼퇴"
+    Else
+        MsgBox "VisibleCopy 시험: 실패 " & f & "건", vbExclamation, "칼퇴"
+    End If
 End Sub
