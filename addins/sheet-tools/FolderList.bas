@@ -37,7 +37,7 @@ Public Sub FolderList_Make()
     If mCount > 0 Then
         ws.Range("A2").Resize(mCount, 6).Value2 = SliceRows()
         ws.Range("D2").Resize(mCount, 1).NumberFormat = "yyyy-mm-dd hh:mm"
-        ws.Range("C2").Resize(mCount, 1).NumberFormat = "#,##0"
+        ws.Range("C2").Resize(mCount, 1).NumberFormat = "#,##0.0"
         For i = 1 To mCount
             ws.Hyperlinks.Add Anchor:=ws.Cells(i + 1, 1), Address:=CStr(mRows(i, 6)), TextToDisplay:=CStr(mRows(i, 1))
         Next i

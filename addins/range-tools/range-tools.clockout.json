@@ -1,0 +1,20 @@
+{
+  "spec": 0,
+  "id": "range-tools",
+  "name": "범위 도구",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "셀을 우클릭하면 '칼퇴 범위 도구' 메뉴가 나옵니다. 자연 정렬(1호, 2호, 10호 순서), 색깔별 합계, 그룹별로 시트 쪼개기(소계 시트 포함). 색깔별 합계는 읽기만 하고, 쪼개기는 원본을 바꾸지 않습니다.",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "자연 순서 비교·선택 처리·확인창에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "sortHeader", "label": "자연 정렬 때 첫 줄은 제목으로 제외", "type": "bool", "default": true},
+    {"key": "sortDescending", "label": "자연 정렬을 내림차순으로", "type": "bool", "default": false},
+    {"key": "colorBy", "label": "색깔별 합계의 기준", "type": "choice", "options": ["칸 색", "글자색"], "default": "칸 색"},
+    {"key": "colorOutput", "label": "색깔별 합계 보여 주는 방식", "type": "choice", "options": ["창으로 보기", "새 시트에 쓰기"], "default": "창으로 보기"},
+    {"key": "splitSummary", "label": "쪼갤 때 소계 시트도 만들기", "type": "bool", "default": true},
+    {"key": "splitMaxGroups", "label": "쪼갤 때 최대 그룹 수", "type": "number", "default": 50, "min": 2, "max": 200}
+  ]
+}
