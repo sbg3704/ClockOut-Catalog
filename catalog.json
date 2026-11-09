@@ -1,188 +1,190 @@
 {
-    "spec": 0,
-    "updated": "2026-11-09",
-    "addins": [
-        {
-            "id": "book-clean",
-            "name": "문서 정리 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "시트·문서",
-            "description": "서식만 남은 빈 구역을 지워 Ctrl+End과 파일 크기를 바로잡습니다. 외부 링크와 #REF! 깨진 이름을 정리합니다. 현재 시트의 인쇄 설정을 다른 시트에 복사합니다. 지우기 전에 목록을 보여 주고 확인을 받습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/book-clean-0.1.000/book-clean.zip",
-            "sha256": "43c7d390753b81df4c003126038dea4d45d2145d3a03cea91b97b0f05fa2f0e7",
-            "size": 63369
-        },
-        {
-            "id": "book-tools",
-            "name": "통합 문서 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "시트·문서",
-            "description": "숨은 시트를 한 번에 보이게 하거나 선택한 시트만 남깁니다. 시트 탭 이름순 정렬과 시트 이름 일괄 바꾸기를 합니다. 공유 전 정리, 원클릭 백업, 선택 시트를 PDF 하나로 저장합니다. 양식의 입력 칸만 비우고 수식은 유지합니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/book-tools-0.1.000/book-tools.zip",
-            "sha256": "e2008880a5fa6d7e9a8764c86404cf69242734f52e71e174bf4dd929759e608c",
-            "size": 73282
-        },
-        {
-            "id": "clockout-vendor-array",
-            "name": "칼퇴 외부 라이브러리: 배열(BetterArray·stdArray·람다)",
-            "version": "0.1.000",
-            "author": "ClockOut (원본: Nick Morgan / Senipah, James Warren / sancarn)",
-            "host": "excel",
-            "category": "라이브러리",
-            "description": "배열 정렬·검색·변환(BetterArray, stdArray), 지연 목록(stdEnumerator), 글로 쓰는 작은 함수(stdLambda), 매크로 호출 개체(stdCallback)를 제공합니다. 원본은 VBA-Better-Array와 stdVBA(MIT)이며 고치지 않았습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-array-0.1.000/clockout-vendor-array.zip",
-            "sha256": "55503b35d62679295bf0980bf3aec840b26f56d67cf97eeac0306bd23033dfca",
-            "size": 632979
-        },
-        {
-            "id": "clockout-vendor-data",
-            "name": "칼퇴 외부 라이브러리: 형식(JSON·사전·날짜)",
-            "version": "0.1.000",
-            "author": "ClockOut (원본: Tim Hall / VBA-tools)",
-            "host": "excel",
-            "category": "라이브러리",
-            "description": "JSON 읽기·쓰기, 사전(Dictionary), ISO 8601·UTC 날짜 변환을 제공합니다. 원본은 VBA-JSON과 VBA-Dictionary(MIT)이며 한 글자도 고치지 않았습니다. 이 라이브러리가 필요한 추가기능을 설치하면 함께 설치됩니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-data-0.1.000/clockout-vendor-data.zip",
-            "sha256": "d6671e08fb0f7f67b9bf09b3074ef9040f81641e723237f8da4ed9ec9caf7d8e",
-            "size": 114745
-        },
-        {
-            "id": "clockout-vendor-sys",
-            "name": "칼퇴 외부 라이브러리: 시스템(클립보드·레지스트리·창·프로세스)",
-            "version": "0.1.000",
-            "author": "ClockOut (원본: James Warren / sancarn stdVBA)",
-            "host": "excel",
-            "category": "라이브러리",
-            "description": "Windows 기능을 VBA에서 쓰는 도구 모음입니다: 클립보드(stdClipboard), 성능 측정·화면 갱신 끄기(stdPerformance), 레지스트리(stdReg), 프로세스(stdProcess), 창·접근성 개체(stdWindow, stdAcc), 이미지(stdImage), COM 저수준 호출(stdCOM). Windows 전용입니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-sys-0.1.000/clockout-vendor-sys.zip",
-            "sha256": "2f16082652b0fb6e0721525450d9c8fec683acb52926b6032e56ee983e1d2b2a",
-            "size": 762424
-        },
-        {
-            "id": "clockout-vendor-text",
-            "name": "칼퇴 외부 라이브러리: 글자(정규식·HTML)",
-            "version": "0.1.000",
-            "author": "ClockOut (원본: James Warren / sancarn stdVBA)",
-            "host": "excel",
-            "category": "라이브러리",
-            "description": "순수 VBA 정규식(stdRegex)과 HTML 만들기(stdHTML)를 제공합니다. Windows에서 VBScript(VBScript.RegExp)가 빠져도 그대로 동작합니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-text-0.1.000/clockout-vendor-text.zip",
-            "sha256": "3530c9322ec03a7de5fac51d6a9f8cfab9c4e937b59b70e69f020c3c9c1f6f3e",
-            "size": 413281
-        },
-        {
-            "id": "cross-hair",
-            "name": "십자 음영",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "보기·선택",
-            "description": "선택한 칸의 행과 열을 연한 색으로 표시합니다. 큰 화면에서 어느 칸인지 한눈에 보입니다. 선택 칸과 보조 줄 색을 따로 지정할 수 있습니다. 표시 전용이라 저장할 때 자동으로 제거됩니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/cross-hair-0.1.000/cross-hair.zip",
-            "sha256": "6bd6c985a210ab7d2e7124c83a801ee4fc11f6d67661f6a68e61c07a3fe7ff1d",
-            "size": 57728
-        },
-        {
-            "id": "image-fit",
-            "name": "사진 셀에 맞추기",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "사진·도형",
-            "description": "선택한 셀(병합 셀 포함)에 사진을 맞춰 넣습니다. 사진 파일 고르기(Ctrl+Shift+A), 클립보드 사진 붙여넣고 맞추기(Ctrl+Shift+V), 이미 올려 둔 사진 맞추기 3가지 기능이 있고, 여백·비율 유지·정렬·단축키는 설정에서 바꿀 수 있습니다. 실행 후 Ctrl+Z로 되돌릴 수 없으니 필요하면 사진을 지우세요.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/image-fit-0.1.000/image-fit.zip",
-            "sha256": "8021c368542ff73900ff7b2b4c80b3f4191084431b6bf75dddbc73bfe6d641f1",
-            "size": 222317
-        },
-        {
-            "id": "quick-tools",
-            "name": "빠른 셀 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "값 정리",
-            "description": "셀 우클릭 메뉴의 빠른 도구 모음입니다. 값으로 고정, IFERROR로 감싸기, 부호 뒤집기, 앞뒤 글자 붙이기를 합니다. 병합을 선택 영역 가운데로 바꾸고 텍스트 날짜를 날짜로 바꿉니다. 병합·오류·수식·빈 칸을 조건으로 선택할 수 있습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/quick-tools-0.1.000/quick-tools.zip",
-            "sha256": "1e213a3f9b4f43ab361c256cce80a09dbfceccae3e2c3b016a8088ec7abe42cf",
-            "size": 75592
-        },
-        {
-            "id": "range-tools",
-            "name": "범위 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "표·범위",
-            "description": "1호, 2호, 10호 순서로 줄을 정렬하는 자연 정렬을 합니다. 칸 색(또는 글자색)별 개수와 합계를 냅니다. 열 값별로 시트를 나누고 소계 시트를 만듭니다. 원본은 바꾸지 않고 새 시트로 만듭니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/range-tools-0.1.000/range-tools.zip",
-            "sha256": "6408280e20e431707b52518b44a2cfa0c2c9523f2a9aff73adb0dda90d912065",
-            "size": 79862
-        },
-        {
-            "id": "selection-stats",
-            "name": "선택 요약 크게 보기",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "보기·선택",
-            "description": "선택한 칸의 합계·평균·개수를 큰 글자로 보여 줍니다. 엑셀 아래 상태 표시줄 값을 떠 있는 창으로 키운 것입니다. 숨긴 줄과 오류 칸은 세지 않습니다. 글자 크기와 표시 항목을 고를 수 있습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/selection-stats-0.1.000/selection-stats.zip",
-            "sha256": "efea8be683f6a1f0fb42d6288fba23ba99922089951f4883413ba94b7ad3af35",
-            "size": 67227
-        },
-        {
-            "id": "sheet-tools",
-            "name": "시트 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "시트·문서",
-            "description": "시트 탭 우클릭 메뉴의 시트 도구입니다. 시트 목차를 링크로 만들고, 선택한 글자 목록으로 시트를 만듭니다. 시트별로 .xlsx 파일을 내보내고, 폴더 파일 목록을 시트로 만듭니다. 기존 시트는 지우지 않습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/sheet-tools-0.1.000/sheet-tools.zip",
-            "sha256": "c04ac2f9709e8b5014acd52b8ab7a4654effc9ff9d19ce82808d1162d9d43da1",
-            "size": 77183
-        },
-        {
-            "id": "value-tools",
-            "name": "값 정리 도구",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "값 정리",
-            "description": "셀 우클릭 메뉴에서 값을 한 번에 고칩니다. 공백·숨은문자 정리, 텍스트 숫자 변환, 병합 해제 후 값 채우기, 빈 칸 채우기를 합니다. 올림·절사, 한글 금액(일금 ○○원정), 두 열 비교도 됩니다. 바꾸기 전에 칸 수를 알리고 확인을 받습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/value-tools-0.1.000/value-tools.zip",
-            "sha256": "4309dd605a72d02bc2b2bb46fba01da500a7fca2647496363e84e9eaa89c80e1",
-            "size": 96992
-        },
-        {
-            "id": "visible-copy",
-            "name": "보이는 칸만 복사·붙여넣기",
-            "version": "0.1.000",
-            "author": "ClockOut",
-            "host": "excel",
-            "category": "보기·선택",
-            "description": "필터나 숨긴 줄·열에서 보이는 칸만 복사합니다. 붙여넣을 때는 목적지의 보이는 줄·열에만 넣습니다. 엑셀 기본 붙여넣기가 숨은 줄을 덮어쓰는 문제를 막습니다. 값만 붙이는 방식도 고를 수 있습니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/visible-copy-0.1.000/visible-copy.zip",
-            "sha256": "be688bfa684284c227ea50cbc7214b56c311af2aa731a5adb9468bab2bdb032d",
-            "size": 51154
-        }
-    ],
-    "packs": [],
-    "libraries": [
-        {
-            "id": "clockout-lib",
-            "name": "칼퇴 공용 라이브러리",
-            "version": "0.1.001",
-            "author": "ClockOut",
-            "host": "excel",
-            "description": "칼퇴 추가기능들이 함께 쓰는 VBA 도우미 모음입니다. 설정 읽기, 선택 범위 검사, 확인창, 글자·숫자·날짜, 파일 고르기, 사진·도형 맞춤을 제공합니다. 대부분의 추가기능이 이 라이브러리를 필요로 하니 먼저 설치하세요. 설치하면 엑셀 추가기능으로 켜 두어야 합니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
-            "sha256": "62ff7a40b3ee077c9d61b82ceda6fa7cba149da0a787b3206e264e44e58fbcfd",
-            "size": 203422
-        }
-    ]
+    "spec":  0,
+    "updated":  "2026-11-09",
+    "addins":  [
+                   {
+                       "id":  "book-clean",
+                       "name":  "문서 정리 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "시트·문서",
+                       "description":  "서식만 남은 빈 구역을 지워 Ctrl+End과 파일 크기를 바로잡습니다. 외부 링크와 #REF! 깨진 이름을 정리합니다. 현재 시트의 인쇄 설정을 다른 시트에 복사합니다. 지우기 전에 목록을 보여 주고 확인을 받습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/book-clean-0.1.001/book-clean.zip",
+                       "sha256":  "5481c6eb3ae6f47da324d97ce982469f9baccc6ab322e65a2ab8d02071bf483e",
+                       "size":  63489
+                   },
+                   {
+                       "id":  "book-tools",
+                       "name":  "통합 문서 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "시트·문서",
+                       "description":  "숨은 시트를 한 번에 보이게 하거나 선택한 시트만 남깁니다. 시트 탭 이름순 정렬과 시트 이름 일괄 바꾸기를 합니다. 공유 전 정리, 원클릭 백업, 선택 시트를 PDF 하나로 저장합니다. 양식의 입력 칸만 비우고 수식은 유지합니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/book-tools-0.1.001/book-tools.zip",
+                       "sha256":  "92527061fec2651044c3c111c0e1fe6bbbfb8bc2dff2212c851e4321f8852012",
+                       "size":  73614
+                   },
+                   {
+                       "id":  "clockout-vendor-array",
+                       "name":  "칼퇴 외부 라이브러리: 배열(BetterArray·stdArray·람다)",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut (원본: Nick Morgan / Senipah, James Warren / sancarn)",
+                       "host":  "excel",
+                       "category":  "라이브러리",
+                       "description":  "배열 정렬·검색·변환(BetterArray, stdArray), 지연 목록(stdEnumerator), 글로 쓰는 작은 함수(stdLambda), 매크로 호출 개체(stdCallback)를 제공합니다. 원본은 VBA-Better-Array와 stdVBA(MIT)이며 고치지 않았습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-array-0.1.000/clockout-vendor-array.zip",
+                       "sha256":  "55503b35d62679295bf0980bf3aec840b26f56d67cf97eeac0306bd23033dfca",
+                       "size":  632979
+                   },
+                   {
+                       "id":  "clockout-vendor-data",
+                       "name":  "칼퇴 외부 라이브러리: 형식(JSON·사전·날짜)",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut (원본: Tim Hall / VBA-tools)",
+                       "host":  "excel",
+                       "category":  "라이브러리",
+                       "description":  "JSON 읽기·쓰기, 사전(Dictionary), ISO 8601·UTC 날짜 변환을 제공합니다. 원본은 VBA-JSON과 VBA-Dictionary(MIT)이며 한 글자도 고치지 않았습니다. 이 라이브러리가 필요한 추가기능을 설치하면 함께 설치됩니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-data-0.1.000/clockout-vendor-data.zip",
+                       "sha256":  "d6671e08fb0f7f67b9bf09b3074ef9040f81641e723237f8da4ed9ec9caf7d8e",
+                       "size":  114745
+                   },
+                   {
+                       "id":  "clockout-vendor-sys",
+                       "name":  "칼퇴 외부 라이브러리: 시스템(클립보드·레지스트리·창·프로세스)",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut (원본: James Warren / sancarn stdVBA)",
+                       "host":  "excel",
+                       "category":  "라이브러리",
+                       "description":  "Windows 기능을 VBA에서 쓰는 도구 모음입니다: 클립보드(stdClipboard), 성능 측정·화면 갱신 끄기(stdPerformance), 레지스트리(stdReg), 프로세스(stdProcess), 창·접근성 개체(stdWindow, stdAcc), 이미지(stdImage), COM 저수준 호출(stdCOM). Windows 전용입니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-sys-0.1.000/clockout-vendor-sys.zip",
+                       "sha256":  "2f16082652b0fb6e0721525450d9c8fec683acb52926b6032e56ee983e1d2b2a",
+                       "size":  762424
+                   },
+                   {
+                       "id":  "clockout-vendor-text",
+                       "name":  "칼퇴 외부 라이브러리: 글자(정규식·HTML)",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut (원본: James Warren / sancarn stdVBA)",
+                       "host":  "excel",
+                       "category":  "라이브러리",
+                       "description":  "순수 VBA 정규식(stdRegex)과 HTML 만들기(stdHTML)를 제공합니다. Windows에서 VBScript(VBScript.RegExp)가 빠져도 그대로 동작합니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-text-0.1.000/clockout-vendor-text.zip",
+                       "sha256":  "3530c9322ec03a7de5fac51d6a9f8cfab9c4e937b59b70e69f020c3c9c1f6f3e",
+                       "size":  413281
+                   },
+                   {
+                       "id":  "cross-hair",
+                       "name":  "십자 음영",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "보기·선택",
+                       "description":  "선택한 칸의 행과 열을 연한 색으로 표시합니다. 큰 화면에서 어느 칸인지 한눈에 보입니다. 선택 칸과 보조 줄 색을 따로 지정할 수 있습니다. 표시 전용이라 저장할 때 자동으로 제거됩니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/cross-hair-0.1.001/cross-hair.zip",
+                       "sha256":  "08328e4270d9c9ccb17671bb0126e71aab738b637e61fd389d8399cddd11310b",
+                       "size":  57870
+                   },
+                   {
+                       "id":  "image-fit",
+                       "name":  "사진 셀에 맞추기",
+                       "version":  "0.1.000",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "사진·도형",
+                       "description":  "선택한 셀(병합 셀 포함)에 사진을 맞춰 넣습니다. 사진 파일 고르기(Ctrl+Shift+A), 클립보드 사진 붙여넣고 맞추기(Ctrl+Shift+V), 이미 올려 둔 사진 맞추기 3가지 기능이 있고, 여백·비율 유지·정렬·단축키는 설정에서 바꿀 수 있습니다. 실행 후 Ctrl+Z로 되돌릴 수 없으니 필요하면 사진을 지우세요.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/image-fit-0.1.000/image-fit.zip",
+                       "sha256":  "8021c368542ff73900ff7b2b4c80b3f4191084431b6bf75dddbc73bfe6d641f1",
+                       "size":  222317
+                   },
+                   {
+                       "id":  "quick-tools",
+                       "name":  "빠른 셀 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "값 정리",
+                       "description":  "셀 우클릭 메뉴의 빠른 도구 모음입니다. 값으로 고정, IFERROR로 감싸기, 부호 뒤집기, 앞뒤 글자 붙이기를 합니다. 병합을 선택 영역 가운데로 바꾸고 텍스트 날짜를 날짜로 바꿉니다. 병합·오류·수식·빈 칸을 조건으로 선택할 수 있습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/quick-tools-0.1.001/quick-tools.zip",
+                       "sha256":  "9bd57188406decaab2db48b534f41b09b7ad3c55c804bf407459b10198b6592f",
+                       "size":  75860
+                   },
+                   {
+                       "id":  "range-tools",
+                       "name":  "범위 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "표·범위",
+                       "description":  "1호, 2호, 10호 순서로 줄을 정렬하는 자연 정렬을 합니다. 칸 색(또는 글자색)별 개수와 합계를 냅니다. 열 값별로 시트를 나누고 소계 시트를 만듭니다. 원본은 바꾸지 않고 새 시트로 만듭니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/range-tools-0.1.001/range-tools.zip",
+                       "sha256":  "a8012d4780b5253d57ca45ca989ef06257e8fec4be3d7356bacbecc82fe76abd",
+                       "size":  80017
+                   },
+                   {
+                       "id":  "selection-stats",
+                       "name":  "선택 요약 크게 보기",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "보기·선택",
+                       "description":  "선택한 칸의 합계·평균·개수를 큰 글자로 보여 줍니다. 엑셀 아래 상태 표시줄 값을 떠 있는 창으로 키운 것입니다. 숨긴 줄과 오류 칸은 세지 않습니다. 글자 크기와 표시 항목을 고를 수 있습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/selection-stats-0.1.001/selection-stats.zip",
+                       "sha256":  "41a5cf8d172af2b4bbe59829383253234e72112bd6fef0e4b366a5f26aeeea60",
+                       "size":  67267
+                   },
+                   {
+                       "id":  "sheet-tools",
+                       "name":  "시트 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "시트·문서",
+                       "description":  "시트 탭 우클릭 메뉴의 시트 도구입니다. 시트 목차를 링크로 만들고, 선택한 글자 목록으로 시트를 만듭니다. 시트별로 .xlsx 파일을 내보내고, 폴더 파일 목록을 시트로 만듭니다. 기존 시트는 지우지 않습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/sheet-tools-0.1.001/sheet-tools.zip",
+                       "sha256":  "bb0ec59ddf2550edd46c13f5f494a6eb8158b88a6ee6d2f82f60e8e4aadcb4dd",
+                       "size":  77354
+                   },
+                   {
+                       "id":  "value-tools",
+                       "name":  "값 정리 도구",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "값 정리",
+                       "description":  "셀 우클릭 메뉴에서 값을 한 번에 고칩니다. 공백·숨은문자 정리, 텍스트 숫자 변환, 병합 해제 후 값 채우기, 빈 칸 채우기를 합니다. 올림·절사, 한글 금액(일금 ○○원정), 두 열 비교도 됩니다. 바꾸기 전에 칸 수를 알리고 확인을 받습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/value-tools-0.1.001/value-tools.zip",
+                       "sha256":  "d043a79773e0d3b74cb4a2274246b91368d6e376be3a9d18b12a4a692dd01a21",
+                       "size":  97347
+                   },
+                   {
+                       "id":  "visible-copy",
+                       "name":  "보이는 칸만 복사·붙여넣기",
+                       "version":  "0.1.001",
+                       "author":  "ClockOut",
+                       "host":  "excel",
+                       "category":  "보기·선택",
+                       "description":  "필터나 숨긴 줄·열에서 보이는 칸만 복사합니다. 붙여넣을 때는 목적지의 보이는 줄·열에만 넣습니다. 엑셀 기본 붙여넣기가 숨은 줄을 덮어쓰는 문제를 막습니다. 값만 붙이는 방식도 고를 수 있습니다.",
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/visible-copy-0.1.001/visible-copy.zip",
+                       "sha256":  "3d6b914dbbf81d64b7f4e9ad739738ba9ee5411b54e9ef4aa2ebfce1c7f79d9e",
+                       "size":  51160
+                   }
+               ],
+    "packs":  [
+
+              ],
+    "libraries":  [
+                      {
+                          "id":  "clockout-lib",
+                          "name":  "칼퇴 공용 라이브러리",
+                          "version":  "0.1.001",
+                          "author":  "ClockOut",
+                          "host":  "excel",
+                          "description":  "칼퇴 추가기능들이 함께 쓰는 VBA 도우미 모음입니다. 설정 읽기, 선택 범위 검사, 확인창, 글자·숫자·날짜, 파일 고르기, 사진·도형 맞춤을 제공합니다. 대부분의 추가기능이 이 라이브러리를 필요로 하니 먼저 설치하세요. 설치하면 엑셀 추가기능으로 켜 두어야 합니다.",
+                          "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
+                          "sha256":  "62ff7a40b3ee077c9d61b82ceda6fa7cba149da0a787b3206e264e44e58fbcfd",
+                          "size":  203422
+                      }
+                  ]
 }
