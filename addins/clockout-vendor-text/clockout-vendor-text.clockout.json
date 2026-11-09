@@ -1,0 +1,12 @@
+{
+  "spec": 0,
+  "id": "clockout-vendor-text",
+  "name": "칼퇴 외부 라이브러리: 글자(정규식·HTML)",
+  "version": "0.1.000",
+  "host": "excel",
+  "type": "library",
+  "category": "라이브러리",
+  "author": "ClockOut (원본: James Warren / sancarn stdVBA)",
+  "license": "MIT (원본 LICENSE 전문을 zip의 licenses/에 함께 넣음)",
+  "description": "순수 VBA 정규식(stdRegex)과 HTML 만들기(stdHTML)를 제공합니다. Windows에서 VBScript(VBScript.RegExp)가 빠져도 그대로 동작합니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다."
+}

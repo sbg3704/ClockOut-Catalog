@@ -1,0 +1,12 @@
+{
+  "spec": 0,
+  "id": "clockout-vendor-data",
+  "name": "칼퇴 외부 라이브러리: 형식(JSON·사전·날짜)",
+  "version": "0.1.000",
+  "host": "excel",
+  "type": "library",
+  "category": "라이브러리",
+  "author": "ClockOut (원본: Tim Hall / VBA-tools)",
+  "license": "MIT (원본 LICENSE 전문을 zip의 licenses/에 함께 넣음)",
+  "description": "JSON 읽기·쓰기, 사전(Dictionary), ISO 8601·UTC 날짜 변환을 제공합니다. 원본은 VBA-JSON과 VBA-Dictionary(MIT)이며 한 글자도 고치지 않았습니다. 이 라이브러리가 필요한 추가기능을 설치하면 함께 설치됩니다."
+}

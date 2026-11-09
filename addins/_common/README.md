@@ -15,7 +15,8 @@
 ## id와 판 (2026-11-08 확정, 요청 002)
 - 공용 lib의 **id는 `clockout-lib`**(바뀌지 않음), 판은 선언 파일 `clockout-lib.clockout.json`의 `version`(지금 `0.1.001`). 추가기능은 `dependencies`에 이 id를 적는다.
 - 지금은 lib가 각 추가기능 .xlam에 함께 컴파일되므로 `"bundled": true`로 적는다(예: `image-fit.clockout.json`). 독립 `clockout-lib.xlam` 배포로 바뀌면 `bundled`를 빼고 `min_version`을 적는다.
-- 외부 라이브러리 모음은 **id `vba-vendor`**(`catalog.json`의 `libraries`, 지금 `0.1.000`, 출처 `vendor/vba/SOURCES.md`).
+- 외부 공개 VBA는 소스 모음 `vba-vendor` 대신 **라이브러리 묶음 .xlam 4개**(`clockout-vendor-data`·`-text`·`-array`·`-sys`)로 빌드해 따로 설치한다. 쓰는 법은 `addins/_client/README.md`의 "외부 라이브러리 묶음" 절, 출처는 `vendor/vba/SOURCES.md`. 이 lib(clockout-lib)는 외부 묶음을 참조하지 않는다.
+- 실행형 라이브러리(.xlam)는 `catalog.json`의 `addins`에 category "라이브러리"로 올린다(`libraries`는 소스 묶음 zip 전용). 선언에도 `"type": "library"`, `"category": "라이브러리"`를 적는다.
 - 판은 공개 함수를 더하거나 동작을 바꿔 Release에 다시 올릴 때만 올린다(`docs/02` 1장 규칙). 이미 쓰는 공개 함수의 이름·인자는 바꾸지 않으므로 판이 올라가도 예전 추가기능이 깨지지 않는다.
 
 ## 독립 xlam으로 부르기 (요청 003)

@@ -25,7 +25,15 @@ Excel 창은 뜨지 않고(보이지 않게 실행), 키보드 입력이나 화�
 - `out\<id>.xlam` : 추가기능 본체
 - `out\<id>.zip` : 칼퇴 [추가기능 설치]에서 고르는 패키지 (맨 위에 `.xlam`, `<id>.clockout.json`, `README.md`가 있으면 그것, `src\` 아래에 .bas 전부(UTF-8 원본)와 `ThisWorkbook_*.txt`)
 
-사용되는 소스는 `addins\<id>\*.bas` + `addins\_common\*.bas` 전부이고, `addins\<id>\ThisWorkbook_*.txt`가 있으면 ThisWorkbook 코드로 넣는다.
+함께 넣는 소스는 선언(`<id>.clockout.json`)으로 정한다. `addins\<id>\ThisWorkbook_*.txt`가 있으면 ThisWorkbook 코드로 넣는다.
+| 선언 | 함께 넣는 것 |
+|---|---|
+| `"type": "library"` (외부 라이브러리 묶음 `clockout-vendor-*`) | `vendor.txt`에 적은 `vendor\vba\` 원본만. zip에 `licenses\<라이브러리>\LICENSE`와 `licenses\SOURCES.md`도 넣음 |
+| `dependencies`에 `clockout-lib`(bundled 아님) | `addins\_client\CoLibClient.bas` |
+| `dependencies`에 `clockout-vendor-*` | `addins\_client\CoVendorClient.bas` |
+| `clockout-lib`이 `bundled: true`이거나 선언·dependencies 없음(예전 방식) | `addins\_common\*.bas` 전부 |
+
+- `-RunTests` 때 선언 dependencies의 라이브러리가 `out\<id>.xlam`으로 있으면 읽기 전용으로 열어 두고 시험한다. 그래서 라이브러리를 먼저 빌드한다(예: `-Addin clockout-vendor-data` 다음 `-Addin vendor-sample`).
 
 ## 자주 나는 오류
 | 메시지 | 원인과 해결 |
