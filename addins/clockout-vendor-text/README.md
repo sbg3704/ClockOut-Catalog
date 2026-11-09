@@ -17,5 +17,8 @@ If rx.Test(s) Then s = rx.Replace(s, "$2-$1")
 
 | 메서드 | 돌려주는 것 |
 |---|---|
-| `CoVendor_Regex()` | 정규식 팩토리(stdRegex): .Create(패턴, [플래그 "i" "m" "s"]) → .Test .Match .MatchAll .Replace |
+| `CoVendor_Regex()` | 정규식 팩토리(CoVendorRegex, 순수 VBA 모드 고정): .Create(패턴, [플래그 "i" "m" "s" "g"]) → .Test .Match .MatchAll .Replace |
 | `CoVendor_Html()` | HTML 팩토리(stdHTML): .Create(태그) → .CreateChild .CreateLiteral .ToString |
+
+## 주의
+- stdRegex 최신판(2026-11-01 커밋)은 기본으로 실험용 기계어 실행 모드(useNative=True)를 씁니다. Excel이 꺼진 일이 있어서(2026-11-09 시험) `CoVendor_Regex().Create`는 항상 순수 VBA 모드로 만듭니다. 원본 파일은 고치지 않았습니다.

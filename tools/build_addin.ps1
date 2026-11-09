@@ -254,7 +254,8 @@ try {
                 }
                 $tp = Join-Path $tDir ([IO.Path]::GetFileName($m.Path))
                 $frxSrc = [IO.Path]::ChangeExtension($m.Path, '.frx'); if (Test-Path $frxSrc) { Copy-Item $frxSrc (Join-Path $tDir ([IO.Path]::GetFileName($frxSrc))) }
-                try { [IO.File]::WriteAllBytes($tp, $cp949.GetBytes($t)) } catch { Fail "시험용 사본 변환 실패: $($m.Name) (임시 폴더 경로에 CP949로 쓸 수 없는 글자가 있을 수 있음)" }
+                $encT = if ($vendorSet.ContainsKey($m.Src)) { $cp949Lenient } else { $cp949 }
+                try { [IO.File]::WriteAllBytes($tp, $encT.GetBytes($t)) } catch { Fail "시험용 사본 변환 실패: $($m.Name) (임시 폴더 경로에 CP949로 쓸 수 없는 글자가 있을 수 있음)" }
                 $tpaths += $tp
             }
             # 선언 dependencies의 라이브러리가 OutDir에 빌드돼 있으면 읽기 전용으로 열어 둔다(시험이 Application.Run으로 부른다).

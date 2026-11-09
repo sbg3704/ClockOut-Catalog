@@ -35,6 +35,7 @@
 | `clockout-vendor-sys` | stdVBA `stdICallable`·`stdClipboard`·`stdPerformance`·`stdReg`·`stdProcess`·`stdAcc`·`stdWindow`·`stdImage`·`stdCOM` | `stdTimer`: 'VBA 프로젝트 개체 모델 접근 신뢰'와 숨김 통합 문서가 필요함. `stdUIElement`: MSForms 참조가 필요함(사용자 정의 폼 전용). `stdHTTP`·`stdWebSocket`·`stdWebView`·`stdFiber`·`stdSentry`·`stdRibbon`: 네트워크·실험 기능이라 다음 판에 따로 논의 |
 | (다음 판) | VBA-Web | `WebHelpers.bas`가 JSON·UTC 공개 함수 6개를 같은 이름으로 또 선언함. 네트워크 기능은 오프라인 원칙과 함께 따로 정함 |
 
+- stdRegex는 기본이 실험용 기계어 실행 모드(useNative=True)라 시험 중 Excel이 꺼졌다(2026-11-09). 글자 묶음의 팩토리 `CoVendorRegex`가 항상 순수 VBA 모드로 만든다.
 - 의존 관계(주석을 뺀 코드 기준): 바닥은 `stdICallable`과 `Dictionary`이고 나머지는 이 둘에만 기대거나 혼자 돈다. `stdWindow`는 `stdAcc`에 기댄다. 묶음끼리는 서로 부르지 않는다.
 - CP949에 없는 글자(예: `stdImage.cls` 주석의 é)는 컴파일용 사본에서만 `?`로 바꾼다. 이 폴더의 원본은 그대로다.
 - 예전 소스 모음 `vba-vendor.zip`(`catalog.json`의 `libraries`)은 묶음 4개를 올리면서 카탈로그에서 뺀다.

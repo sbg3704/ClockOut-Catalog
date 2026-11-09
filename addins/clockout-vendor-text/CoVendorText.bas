@@ -10,7 +10,7 @@ Attribute VB_Name = "CoVendorText"
 '   If rx.Test(s) Then s = rx.Replace(s, "$2-$1")
 '   직접 부를 때: Application.Run("'clockout-vendor-text.xlam'!CoVendor_Version"), Application.Run("'clockout-vendor-text.xlam'!CoVendor_Api")
 ' 팩토리(개체 CoVendorTextApi의 메서드, 모두 As Object로 늦은 바인딩):
-'   CoVendor_Regex() : 정규식 팩토리(stdRegex): .Create(패턴, [플래그 "i" "m" "s"]) → .Test .Match .MatchAll .Replace
+'   CoVendor_Regex() : 정규식 팩토리(CoVendorRegex, 순수 VBA 모드 고정): .Create(패턴, [플래그 "i" "m" "s" "g"]) → .Test .Match .MatchAll .Replace
 '   CoVendor_Html() : HTML 팩토리(stdHTML): .Create(태그) → .CreateChild .CreateLiteral .ToString
 ' 주의: 판을 올릴 때 PACK_VERSION과 clockout-vendor-text.clockout.json의 version을 함께 고친다.
 ' 시험: Test_CoVendorText
