@@ -27,17 +27,6 @@
             "size": 73282
         },
         {
-            "id": "clockout-lib",
-            "name": "칼퇴 공용 라이브러리",
-            "version": "0.1.001",
-            "author": "ClockOut",
-            "host": "excel",
-            "description": "칼퇴 추가기능들이 함께 쓰는 VBA 도우미 모음(설정 읽기, 실행 상태 복원, 선택 범위 검사, 사진·도형 맞춤, 파일 고르기, 글자·숫자·날짜 도우미). 지금은 각 추가기능 .xlam에 함께 컴파일되어 들어가므로 따로 설치하지 않아도 됩니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
-            "sha256": "62ff7a40b3ee077c9d61b82ceda6fa7cba149da0a787b3206e264e44e58fbcfd",
-            "size": 203422
-        },
-        {
             "id": "cross-hair",
             "name": "십자 음영",
             "version": "0.1.000",
@@ -136,6 +125,17 @@
     ],
     "packs": [],
     "libraries": [
+        {
+            "id": "clockout-lib",
+            "name": "칼퇴 공용 라이브러리",
+            "version": "0.1.001",
+            "author": "ClockOut",
+            "host": "excel",
+            "description": "칼퇴 추가기능들이 함께 쓰는 VBA 도우미 모음입니다. 설정 읽기, 선택 범위 검사, 확인창, 글자·숫자·날짜, 파일 고르기, 사진·도형 맞춤을 제공합니다. 대부분의 추가기능이 이 라이브러리를 필요로 하니 먼저 설치하세요. 설치하면 엑셀 추가기능으로 켜 두어야 합니다.",
+            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
+            "sha256": "62ff7a40b3ee077c9d61b82ceda6fa7cba149da0a787b3206e264e44e58fbcfd",
+            "size": 203422
+        },
         {
             "id": "vba-vendor",
             "name": "외부 VBA 라이브러리 모음",
