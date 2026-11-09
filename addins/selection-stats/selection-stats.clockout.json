@@ -2,8 +2,10 @@
   "spec": 0,
   "id": "selection-stats",
   "name": "선택 요약 크게 보기",
-  "version": "0.1.000",
+  "version": "0.1.001",
   "host": "excel",
+  "group": "선택 요약",
+  "icon": "AutoSum",
   "category": "보기·선택",
   "author": "ClockOut",
   "description": "선택한 칸의 합계·평균·개수를 큰 글자로 보여 줍니다. 엑셀 아래 상태 표시줄 값을 떠 있는 창으로 키운 것입니다. 숨긴 줄과 오류 칸은 세지 않습니다. 글자 크기와 표시 항목을 고를 수 있습니다.",
@@ -11,7 +13,7 @@
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "설정 읽기에 공용 라이브러리를 씁니다"}
   ],
   "commands": [
-    {"id": "toggle", "label": "선택 요약 창 열기/닫기", "macro": "SelStats_Toggle", "tip": "합계·평균·개수를 큰 글자로 보는 떠 있는 창", "icon": "AutoSum", "key": ""}
+    {"id": "toggle", "label": "선택 요약 창 열기/닫기", "macro": "SelStats_Toggle", "tip": "합계·평균·개수를 큰 글자로 보는 떠 있는 창", "icon": "AutoSum", "main": true, "key": ""}
   ],
   "params": [
     {"key": "fontSize", "label": "숫자 글자 크기", "type": "number", "unit": "pt", "default": 28, "min": 12, "max": 80, "help": "창에 나오는 큰 숫자의 크기. 다음에 창을 열 때 적용"},

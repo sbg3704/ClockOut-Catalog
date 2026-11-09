@@ -2,8 +2,10 @@
   "spec": 0,
   "id": "range-tools",
   "name": "범위 도구",
-  "version": "0.1.000",
+  "version": "0.1.001",
   "host": "excel",
+  "group": "범위",
+  "icon": "Table",
   "category": "표·범위",
   "author": "ClockOut",
   "description": "1호, 2호, 10호 순서로 줄을 정렬하는 자연 정렬을 합니다. 칸 색(또는 글자색)별 개수와 합계를 냅니다. 열 값별로 시트를 나누고 소계 시트를 만듭니다. 원본은 바꾸지 않고 새 시트로 만듭니다.",
@@ -11,9 +13,9 @@
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "자연 순서 비교·선택 처리·확인창에 공용 라이브러리를 씁니다"}
   ],
   "commands": [
-    {"id": "natsort", "label": "자연 정렬", "macro": "RangeSort_Natural", "tip": "1호, 2호, 10호 순서로 줄 정렬", "icon": "SortAscending", "key": ""},
-    {"id": "colorsum", "label": "색깔별 합계", "macro": "RangeColor_Sum", "tip": "칸 색별 개수·합계", "key": ""},
-    {"id": "split", "label": "그룹별 시트 쪼개기", "macro": "RangeSplit_ByGroup", "tip": "열 값별로 시트를 나누고 소계 시트 생성", "key": ""}
+    {"id": "natsort", "label": "자연 정렬", "macro": "RangeSort_Natural", "tip": "1호, 2호, 10호 순서로 줄 정렬", "icon": "SortAscendingExcel,SortAZ,SortDialog,DataSortDialog,SortAndFilterGallery", "main": true, "key": ""},
+    {"id": "colorsum", "label": "색깔별 합계", "macro": "RangeColor_Sum", "tip": "칸 색별 개수·합계", "icon": "AutoSum", "main": true, "key": ""},
+    {"id": "split", "label": "그룹별 시트 쪼개기", "macro": "RangeSplit_ByGroup", "tip": "열 값별로 시트를 나누고 소계 시트 생성", "icon": "WorksheetInsert,SheetInsert,TableInsert", "main": true, "key": ""}
   ],
   "params": [
     {"key": "sortHeader", "label": "자연 정렬 때 첫 줄은 제목으로 제외", "type": "bool", "default": true},
