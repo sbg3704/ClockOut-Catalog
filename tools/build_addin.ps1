@@ -256,7 +256,10 @@ try {
         $aicon = if ($declObj.icon) { [string]$declObj.icon } else { 'MacroPlay' }
         $okIcon = { param($list)
             foreach ($n in ([string]$list -split ',')) { $n = $n.Trim(); if (-not $n) { continue }
-                try { $pic = $xl.CommandBars.GetImageMso($n, 16, 16); if ($pic) { return $n } } catch {} }
+                # 유효한 이름도 보이지 않는 Excel에서는 그림 변환이 E_UNEXPECTED(0x8000FFFF)로 실패한다.
+                # 없는 이름만 E_INVALIDARG(0x80070057)를 던지므로 그것만 무효로 본다.
+                try { $null = $xl.CommandBars.GetImageMso($n, 16, 16); return $n }
+                catch { if ($_.Exception.HResult -ne -2147024809) { return $n } } }
             return $null }
         $badIcons = @()
         $mk = { param($c, $large, $ind)
