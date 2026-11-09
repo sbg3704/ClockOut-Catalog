@@ -13,3 +13,6 @@
 *.frx binary
 *.fas binary
 *.vlx binary
+# 이미지·묶음 (바이너리는 원래 Release로 올리지만 실수 대비)
+*.png binary
+*.zip binary

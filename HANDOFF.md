@@ -1,16 +1,16 @@
 # HANDOFF
 
-- 마지막 갱신: 2026-11-09
-- 환경: office-host (`D:\CO\ClockOut-Catalog`)
+- 마지막 갱신: 2026-11-09 15:10
+- 환경: office-vm (`C:\CO\ClockOut-Catalog`, SIMVM) — 편입 보강(처음 편입은 office-host)
 - 계정: 2 (sbg3704)
-- 브랜치: claude/docs-workspace-onboarding (origin/main 664af4e 기준)
+- 브랜치: claude/docs-workspace-onboarding-b (claude/docs-workspace-onboarding 위, origin/main 664af4e 기준)
 
 ## 완료
 - 추가기능 11개 Release 등록(공용 lib·image-fit 해시 반영), lib를 `libraries`로 등록(PR#18까지 main에 합쳐짐).
-- claude-workspace 체계 편입(CLAUDE.md, HANDOFF.md).
+- claude-workspace 체계 편입(CLAUDE.md, HANDOFF.md), 보강: .gitattributes(png·zip 바이너리), .claude/settings.json(force push·Release 명령 막음).
 
 ## 진행 중
-- 없음(이 저장소 자체의 미완료 작업은 확인된 것 없음).
+- 없음(이 저장소 자체의 미완료 작업은 확인된 것 없음). 열린 PR#11(`claude/lib-desc-fix`, lib 설명 고침)은 머지 대기.
 
 ## 다음 할 일
 - 앱 저장소 `HANDOFF.md`의 배포 순서 참고: 앱 릴리스(`app-v0.1.000`)는 이 저장소 Release로 올리며 **사용자가 직접** 만든다.
