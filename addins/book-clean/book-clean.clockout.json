@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "book-clean",
   "name": "문서 정리 도구",
-  "version": "0.1.003",
+  "version": "0.1.004",
   "host": "excel",
   "group": "문서 정리",
   "icon": "DocumentInspect,InspectDocument",

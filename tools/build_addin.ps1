@@ -298,6 +298,8 @@ try {
         Add-Type -AssemblyName System.IO.Compression
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         $esc = { param($t) [Security.SecurityElement]::Escape([string]$t) }
+        # 단추·메뉴는 idQ가 아니라 일반 id로 만든다. idQ 컨트롤의 콜백(onAction)은 xmlns 이름공간(COM 추가기능 ProgID)으로 보내져
+        # VBA 파일의 콜백이 불리지 않는다(onLoad는 되는데 클릭은 무반응이던 원인). 여러 파일이 함께 쓰는 탭만 idQ로 둔다.
         # 추가기능마다 그룹 하나(id가 추가기능별로 달라 겹치지 않음). main:true 명령은 큰 단추, 나머지는 작은 단추(3줄씩 쌓임), 작은 단추가 6개를 넘으면 나머지는 "더 보기" 드롭다운으로.
         $aid = ($outId -replace '[^A-Za-z0-9]', '_')
         $gname = if ($declObj.group) { [string]$declObj.group } elseif ($declObj.name) { [string]$declObj.name } else { $outId }
@@ -316,7 +318,7 @@ try {
             if (-not $icon) { $script:badIcons += $want; $icon = & $okIcon $aicon; if (-not $icon) { $icon = 'MacroPlay' } }
             $tip = if ($c.tip) { " screentip=`"$(& $esc $c.label)`" supertip=`"$(& $esc $c.tip)`"" } else { '' }
             $sz = if ($large) { ' size="large"' } else { '' }
-            "$ind<button idQ=`"ck:btn_${aid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`"$sz tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click_$aid`"$tip />`n" }
+            "$ind<button id=`"btn_${aid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`"$sz tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click_$aid`"$tip />`n" }
         $larges = @($cmds | Where-Object { $_.main -eq $true })
         $smalls = @($cmds | Where-Object { $_.main -ne $true })
         if ($larges.Count -eq 0 -and $smalls.Count -le 3) { $larges = $smalls; $smalls = @() }
@@ -326,7 +328,7 @@ try {
         foreach ($c in $shown) { [void]$inner.Append((& $mk $c $false '      ')) }
         if ($smalls.Count -gt 6) {
             $mi = & $okIcon 'MacroPlay'
-            [void]$inner.Append("      <menu idQ=`"ck:mnu_$aid`" label=`"더 보기`" imageMso=`"$mi`">`n")
+            [void]$inner.Append("      <menu id=`"mnu_$aid`" label=`"더 보기`" imageMso=`"$mi`">`n")
             foreach ($c in $smalls[5..($smalls.Count - 1)]) { [void]$inner.Append((& $mk $c $false '        ')) }
             [void]$inner.Append("      </menu>`n")
         }
