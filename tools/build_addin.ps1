@@ -125,7 +125,7 @@ try {
     $modules = @()
     foreach ($f in $srcFiles) {
         $text = [IO.File]::ReadAllText($f.FullName, [Text.Encoding]::UTF8)
-        if ($f.Name -eq 'CoRibbon.bas') { $text = $text.Replace('CoRibbon_Click', 'CoRibbon_Click_' + ($outId -replace '[^A-Za-z0-9]', '_')).Replace('CoRibbon_Load', 'CoRibbon_Load_' + ($outId -replace '[^A-Za-z0-9]', '_')) }
+        if ($f.Name -eq 'CoRibbon.bas') { $text = $text.Replace('CoRibbon_Click', 'CoRibbon_Click_' + ($outId -replace '[^A-Za-z0-9]', '_')) }
         $text = ($text -replace "`r`n", "`n") -replace "`n", "`r`n"
         try { $bytes = $cp949.GetBytes($text) }
         catch {
@@ -336,7 +336,7 @@ try {
         $tabId = if ($declObj.tab) { "ck:tab_$aid" } else { 'ck:main' }
         $tabLabel = if ($declObj.tab) { [string]$declObj.tab } else { '칼퇴' }
         $ui = "<?xml version=`"1.0`" encoding=`"UTF-8`" standalone=`"yes`"?>`n" +
-              "<customUI onLoad=`"CoRibbon_Load_$aid`" xmlns=`"http://schemas.microsoft.com/office/2009/07/customui`" xmlns:ck=`"urn:clockout:ribbon`">`n" +
+              "<customUI xmlns=`"http://schemas.microsoft.com/office/2009/07/customui`" xmlns:ck=`"urn:clockout:ribbon`">`n" +
               "  <ribbon>`n    <tabs>`n" +
               "    <tab idQ=`"$tabId`" label=`"$tabLabel`" insertAfterMso=`"TabView`">`n" +
               "     <group idQ=`"ck:grp_$aid`" label=`"$(& $esc $gname)`">`n" + $inner.ToString() + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"

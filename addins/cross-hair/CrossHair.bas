@@ -12,7 +12,7 @@ Attribute VB_Name = "CrossHair"
 ' 원리: 규칙 수식이 CELL("row")·CELL("col")(지금 선택한 칸)을 읽고, 선택이 바뀔 때마다 그 시트만 다시
 '       계산시켜 규칙이 새 위치를 읽게 한다. 서식 규칙이라 셀 값·수식은 바뀌지 않는다.
 ' 한계: 음영(채우기)은 엑셀 조건부 서식이라 투명하지 않아 칸의 원래 배경색을 덮는다. 그래서 기본은 아주 연한 음영 + 선이고, 선택한 칸만 진한 색이다.
-'       보호된 시트에는 걸 수 없다.
+'       보호된 시트에는 걸 수 없다(그 시트로 가면 상태 표시줄에 이유를 보인다).
 ' 의존: 공용 라이브러리 clockout-lib 0.1.001 이상(CoSetting_*, CoGuard_Notice). CoLibClient.bas가 연결한다.
 '==============================================================
 Option Explicit
@@ -40,6 +40,7 @@ Private mUseFill As Boolean
 Private mRowOn As Boolean
 Private mColOn As Boolean
 Private mKey As String
+Private mProtNote As Boolean                       ' 보호된 시트 안내를 상태 표시줄에 띄웠는지
 
 '--- 매크로 ---------------------------------------------------
 Public Sub CrossHair_Toggle()
@@ -69,6 +70,7 @@ End Sub
 
 Public Sub CrossHair_Off()
     mOn = False
+    If mProtNote Then Application.StatusBar = False: mProtNote = False
     Set mEvents = Nothing
     StripAll
 End Sub
@@ -80,8 +82,13 @@ Public Sub CrossHair_Apply(ByVal sh As Object)
     If Not mOn Then Exit Sub
     If Not TypeOf sh Is Worksheet Then Exit Sub
     Set ws = sh
-    On Error Resume Next                               ' 보호된 시트·특수 시트는 조용히 건너뛴다
-    If ws.ProtectContents Then Exit Sub
+    On Error Resume Next                               ' 특수 시트는 조용히 건너뛴다
+    If ws.ProtectContents Then                         ' 보호된 시트에는 규칙을 걸 수 없어 이유를 알린다
+        Application.StatusBar = "십자 음영: 보호된 시트라 표시할 수 없습니다(검토 > 시트 보호 해제)."
+        mProtNote = True
+        Exit Sub
+    End If
+    If mProtNote Then Application.StatusBar = False: mProtNote = False
     If Not HasRule(ws) Then AddRule ws
     ws.Calculate
 End Sub

@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "value-tools",
   "name": "값 정리 도구",
-  "version": "0.1.004",
+  "version": "0.1.005",
   "host": "excel",
   "group": "값 정리",
   "icon": "FindDialog,Find",
