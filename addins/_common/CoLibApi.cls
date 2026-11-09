@@ -117,6 +117,29 @@ Public Function CoGuard_AskText(ByVal msg As String, ByRef result As String, Opt
     CoGuard_AskText = CoGuard.CoGuard_AskText(msg, result, title, defaultText)
 End Function
 
+'--- CoKey ---------------------------------------------------
+Public Function CoKey_Normalize(ByVal keyText As String) As String
+    CoKey_Normalize = CoKey.CoKey_Normalize(keyText)
+End Function
+Public Function CoKey_ToOnKey(ByVal keyText As String) As String
+    CoKey_ToOnKey = CoKey.CoKey_ToOnKey(keyText)
+End Function
+Public Function CoKey_IsDangerous(ByVal keyText As String, ByRef reason As String) As Boolean
+    CoKey_IsDangerous = CoKey.CoKey_IsDangerous(keyText, reason)
+End Function
+Public Function CoKey_Register(ByVal keyText As String, ByVal macroName As String, ByVal ownerId As String, ByRef reason As String) As Boolean
+    CoKey_Register = CoKey.CoKey_Register(keyText, macroName, ownerId, reason)
+End Function
+Public Function CoKey_Unregister(ByVal keyText As String, ByVal ownerId As String) As Boolean
+    CoKey_Unregister = CoKey.CoKey_Unregister(keyText, ownerId)
+End Function
+Public Function CoKey_UnregisterAll(ByVal ownerId As String) As Long
+    CoKey_UnregisterAll = CoKey.CoKey_UnregisterAll(ownerId)
+End Function
+Public Function CoKey_Conflicts(ByVal keyText As String, ByRef owners As String) As Boolean
+    CoKey_Conflicts = CoKey.CoKey_Conflicts(keyText, owners)
+End Function
+
 '--- CoNum ---------------------------------------------------
 Public Function CoNum_Clamp(ByVal v As Double, ByVal lo As Double, ByVal hi As Double) As Double
     CoNum_Clamp = CoNum.CoNum_Clamp(v, lo, hi)
