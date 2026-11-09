@@ -4,7 +4,7 @@ Attribute VB_Name = "VisibleCopy"
 '==============================================================
 ' 기능: 엑셀은 필터·숨김이 걸린 곳에 붙여넣으면 숨은 줄에도 값을 덮어쓰고, 손으로 숨긴 줄·열은 복사에도 같이 딸려 온다.
 '       (1) 보이는 칸만 복사해 두기  (2) 복사해 둔 것을 목적지의 보이는 줄·열에만 차례로 붙여넣기.
-' 사용법: 복사할 범위를 고르고 Ctrl+Shift+C(보이는 칸만 복사). 붙일 첫 칸을 고르고 Ctrl+Shift+V(보이는 칸에만 붙여넣기).
+' 사용법: 우클릭 메뉴(또는 리본 버튼)에서 "보이는 칸만 복사", 붙일 첫 칸에서 "보이는 칸에만 붙여넣기". 단축키는 기본 없음(설정에서 지정).
 '         셀 우클릭 > "칼퇴 보이는 칸만 복사·붙여넣기"에도 같은 항목이 있다. 단축키는 설정에서 바꾼다(비우면 없음).
 ' 설정: vcPasteMode("전부"=서식·수식 포함 / "값만"), keyCopy, keyPaste(Application.OnKey 형식, ^=Ctrl +=Shift %=Alt).
 ' 규칙: 붙여넣기 전에 줄·칸 수를 알려 주고 확인을 받는다. 목적지에서 숨은 줄·열은 건드리지 않는다. 실행 후 Ctrl+Z 불가.
@@ -42,8 +42,8 @@ Public Sub VisibleCopy_Startup()
     End With
     Set api = CoLibClient_Api(MIN_LIB, ADDIN_NAME, True)
     If api Is Nothing Then Exit Sub
-    mKeyCopy = api.CoSetting_Text(VC_ADDIN_ID, "keyCopy", "^+C")
-    mKeyPaste = api.CoSetting_Text(VC_ADDIN_ID, "keyPaste", "^+V")
+    mKeyCopy = api.CoSetting_Text(VC_ADDIN_ID, "keyCopy", "")
+    mKeyPaste = api.CoSetting_Text(VC_ADDIN_ID, "keyPaste", "")
     If Len(mKeyCopy) > 0 Then Application.OnKey mKeyCopy, "'" & ThisWorkbook.Name & "'!VisibleCopy_Copy"
     If Len(mKeyPaste) > 0 Then Application.OnKey mKeyPaste, "'" & ThisWorkbook.Name & "'!VisibleCopy_Paste"
 End Sub
