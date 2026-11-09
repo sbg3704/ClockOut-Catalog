@@ -56,8 +56,21 @@ if ($declFile -and -not $isLib) {
         foreach ($dep in @($declObj.dependencies)) { if ($dep.id -eq 'clockout-lib' -and -not $dep.bundled) { $useClient = $true } }
     } catch { Write-Host "[중단] 선언 파일을 읽을 수 없습니다: $($declFile.Name) ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
 }
+# 선언에 commands가 있으면 리본 버튼을 만든다(칼퇴 탭). 클릭 처리 모듈 CoRibbon.bas를 함께 넣고, 저장 뒤 .xlam에 리본 XML을 끼운다.
+$cmds = @()
+if ($declObj -and $declObj.commands) { $cmds = @($declObj.commands) }
+$hasCommands = ($cmds.Count -gt 0 -and -not $isLib)
+if ($hasCommands) {
+    foreach ($c in $cmds) {
+        if ($c.id -notmatch '^[A-Za-z][A-Za-z0-9_]*$') { Write-Host "[중단] commands의 id는 영문으로 시작하는 영문·숫자·밑줄이어야 합니다: $($c.id)" -ForegroundColor Red; exit 1 }
+        if (-not $c.label) { Write-Host "[중단] commands '$($c.id)'에 label이 없습니다." -ForegroundColor Red; exit 1 }
+        if ($c.macro -notmatch '^[A-Za-z][A-Za-z0-9_]*$') { Write-Host "[중단] commands '$($c.id)'의 macro 이름이 올바르지 않습니다: $($c.macro)" -ForegroundColor Red; exit 1 }
+    }
+    if (($cmds | Group-Object id | Where-Object { $_.Count -gt 1 })) { Write-Host "[중단] commands의 id가 겹칩니다." -ForegroundColor Red; exit 1 }
+}
 $srcFiles = @()
 $srcFiles += Get-ChildItem $addinDir -File | Where-Object { $_.Extension -in $srcExt }
+if ($hasCommands) { $srcFiles += Get-ChildItem (Join-Path $clientDir 'ribbon') -File -Filter 'CoRibbon.bas' }
 if (-not $isLib) {
     if ($useClient) { if (Test-Path $clientDir) { $srcFiles += Get-ChildItem $clientDir -File | Where-Object { $_.Extension -in $srcExt } } }
     elseif (Test-Path $commonDir) { $srcFiles += Get-ChildItem $commonDir -File | Where-Object { $_.Extension -in $srcExt } }
@@ -90,6 +103,13 @@ try {
         $modules += [pscustomobject]@{ Name = $nm; Path = $outPath; Src = $f.FullName; Text = $text }
     }
     Info "소스 $($modules.Count)개를 CP949로 변환했습니다."
+    if ($hasCommands) {
+        foreach ($c in $cmds) {
+            $found = $false
+            foreach ($m in $modules) { if ($m.Text -match ('(?mi)^\s*Public Sub ' + [regex]::Escape($c.macro) + '\s*\(')) { $found = $true; break } }
+            if (-not $found) { Fail "commands '$($c.id)'의 매크로 Public Sub $($c.macro)를 소스에서 찾지 못했습니다." }
+        }
+    }
 
     # --- Excel 시작(보이지 않게) ---
     try { $xl = New-Object -ComObject Excel.Application }
@@ -224,6 +244,41 @@ try {
     $wb.SaveAs($xlam, 55)
     $wb.Close($false)
     Info "저장: $xlam"
+
+    if ($hasCommands) {
+        Add-Type -AssemblyName System.IO.Compression
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $esc = { param($t) [Security.SecurityElement]::Escape([string]$t) }
+        $gid = 'grp_' + ($outId -replace '[^A-Za-z0-9]', '_')
+        $gname = if ($declObj.name) { [string]$declObj.name } else { $outId }
+        $btns = New-Object Text.StringBuilder
+        foreach ($c in $cmds) {
+            $icon = if ($c.icon) { [string]$c.icon } else { 'MacroPlay' }
+            $tip = if ($c.tip) { " screentip=`"$(& $esc $c.label)`" supertip=`"$(& $esc $c.tip)`"" } else { '' }
+            [void]$btns.Append("      <button idQ=`"ck:btn_${gid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`" size=`"large`" tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click`"$tip />`n")
+        }
+        $ui = "<?xml version=`"1.0`" encoding=`"UTF-8`" standalone=`"yes`"?>`n" +
+              "<customUI xmlns=`"http://schemas.microsoft.com/office/2009/07/customui`" xmlns:ck=`"urn:clockout:ribbon`">`n" +
+              "  <ribbon>`n    <tabs>`n" +
+              "    <tab idQ=`"ck:main`" label=`"칼퇴`" insertAfterMso=`"TabView`">`n" +
+              "     <group idQ=`"ck:$gid`" label=`"$(& $esc $gname)`">`n" + $btns.ToString() + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"
+        $utf8 = New-Object Text.UTF8Encoding($false)
+        $za = [IO.Compression.ZipFile]::Open($xlam, 'Update')
+        try {
+            $old1 = $za.GetEntry('customUI/customUI14.xml'); if ($old1) { $old1.Delete() }
+            $en = $za.CreateEntry('customUI/customUI14.xml')
+            $sw = New-Object IO.StreamWriter($en.Open(), $utf8); $sw.Write($ui); $sw.Dispose()
+            $re = $za.GetEntry('_rels/.rels')
+            $sr = New-Object IO.StreamReader($re.Open(), $utf8); $rels = $sr.ReadToEnd(); $sr.Dispose()
+            if ($rels -notmatch 'customUI14') {
+                $rels = $rels.Replace('</Relationships>', '<Relationship Id="rIdCkUi" Type="http://schemas.microsoft.com/office/2007/relationships/ui/extensibility" Target="customUI/customUI14.xml"/></Relationships>')
+                $re.Delete()
+                $re2 = $za.CreateEntry('_rels/.rels')
+                $sw = New-Object IO.StreamWriter($re2.Open(), $utf8); $sw.Write($rels); $sw.Dispose()
+            }
+        } finally { $za.Dispose() }
+        Info "리본 버튼 $($cmds.Count)개를 '칼퇴' 탭에 넣었습니다."
+    }
 
     Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem

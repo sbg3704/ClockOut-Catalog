@@ -9,6 +9,12 @@
   "dependencies": [
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "시트 이름·파일 처리·확인창에 공용 라이브러리를 씁니다"}
   ],
+  "commands": [
+    {"id": "index", "label": "시트 목차 만들기", "macro": "SheetIndex_Make", "tip": "모든 시트를 링크로 나열한 목차 시트", "key": ""},
+    {"id": "makelist", "label": "목록으로 시트 만들기", "macro": "SheetMake_FromList", "tip": "선택한 칸의 글자마다 새 시트", "key": ""},
+    {"id": "export", "label": "시트별 파일로 내보내기", "macro": "SheetExport_Each", "tip": "시트마다 .xlsx 파일로 저장", "key": ""},
+    {"id": "filelist", "label": "폴더 파일 목록", "macro": "FolderList_Make", "tip": "폴더 안 파일 목록을 새 시트에", "key": ""}
+  ],
   "params": [
     {"key": "indexName", "label": "목차 시트 이름", "type": "text", "default": "목차"},
     {"key": "indexIncludeHidden", "label": "목차에 숨긴 시트도 넣기", "type": "bool", "default": true},

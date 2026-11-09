@@ -9,6 +9,11 @@
   "dependencies": [
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "데이터 끝 찾기·확인창에 공용 라이브러리를 씁니다"}
   ],
+  "commands": [
+    {"id": "lastcell", "label": "마지막 셀 바로잡기", "macro": "BookClean_FixLastCell", "tip": "서식만 남은 빈 구역을 지워 Ctrl+End 정상화", "key": ""},
+    {"id": "links", "label": "외부 링크·깨진 이름 정리", "macro": "BookClean_Links", "tip": "다른 파일 링크와 #REF! 이름 정리", "key": ""},
+    {"id": "page", "label": "인쇄 설정 복사", "macro": "BookClean_CopyPage", "tip": "현재 시트 인쇄 설정을 다른 시트에", "key": ""}
+  ],
   "params": [
     {"key": "lastAllSheets", "label": "마지막 셀 바로잡기를 모든 시트에", "type": "bool", "default": false, "help": "끄면 지금 보는 시트만"},
     {"key": "linksBreakAction", "label": "외부 링크 처리", "type": "choice", "options": ["값으로 바꾸고 끊기", "건드리지 않기"], "default": "값으로 바꾸고 끊기"},

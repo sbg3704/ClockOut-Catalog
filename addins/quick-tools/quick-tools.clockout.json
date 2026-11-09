@@ -9,6 +9,15 @@
   "dependencies": [
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "선택 처리·확인창·날짜 해석에 공용 라이브러리를 씁니다"}
   ],
+  "commands": [
+    {"id": "tovalues", "label": "값으로 고정", "macro": "QuickEdit_ToValues", "tip": "수식을 현재 값으로", "key": ""},
+    {"id": "iferror", "label": "IFERROR로 감싸기", "macro": "QuickEdit_WrapIferror", "tip": "수식을 IFERROR로 감쌈", "key": ""},
+    {"id": "flip", "label": "부호 뒤집기", "macro": "QuickEdit_FlipSign", "tip": "숫자에 -1을 곱함", "key": ""},
+    {"id": "affix", "label": "앞뒤 글자 붙이기", "macro": "QuickEdit_AddAffix", "tip": "각 칸 앞뒤에 글자 붙임", "key": ""},
+    {"id": "mergecenter", "label": "병합 해제 후 가운데", "macro": "QuickMisc_MergeToCenter", "tip": "병합을 풀고 선택 영역 가운데로", "key": ""},
+    {"id": "todate", "label": "텍스트 날짜를 날짜로", "macro": "QuickMisc_TextToDate", "tip": "글자 날짜를 진짜 날짜로", "key": ""},
+    {"id": "select", "label": "조건으로 칸 선택", "macro": "QuickMisc_SelectSpecial", "tip": "병합·오류·수식·빈 칸 등 선택", "key": ""}
+  ],
   "params": [
     {"key": "iferrorValue", "label": "IFERROR로 감쌀 때 오류 대신 보일 값", "type": "text", "default": "0", "help": "숫자나 \"글자\" 형태. 빈 칸으로 두려면 비워 두면 \"\"(빈 글자)가 됩니다"},
     {"key": "dateFormat", "label": "날짜로 바꾼 칸의 표시 형식", "type": "text", "default": "yyyy-mm-dd"}
