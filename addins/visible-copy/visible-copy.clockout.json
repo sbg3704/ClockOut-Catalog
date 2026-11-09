@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "visible-copy",
   "name": "보이는 칸만 복사·붙여넣기",
-  "version": "0.1.003",
+  "version": "0.1.004",
   "host": "excel",
   "group": "보이는 칸",
   "icon": "Copy",
