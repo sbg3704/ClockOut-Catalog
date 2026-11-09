@@ -15,7 +15,7 @@
   "commands": [
     {"id": "showall", "label": "숨은 시트 모두 보이기", "macro": "BookTools_ShowAll", "tip": "숨은 시트를 한 번에 표시", "icon": "SheetUnhide,UnhideSheet,WorksheetUnhide", "key": ""},
     {"id": "hideothers", "label": "선택 시트만 남기기", "macro": "BookTools_HideOthers", "tip": "선택한 시트 외 숨김", "icon": "SheetHide,HideSheet,WorksheetHide", "key": ""},
-    {"id": "sorttabs", "label": "시트 탭 이름순 정렬", "macro": "BookTools_SortTabs", "tip": "1호, 2호, 10호 순서", "icon": "SortAscending", "key": ""},
+    {"id": "sorttabs", "label": "시트 탭 이름순 정렬", "macro": "BookTools_SortTabs", "tip": "1호, 2호, 10호 순서", "icon": "SortAscendingExcel,SortAZ,SortDialog,DataSortDialog,SortAndFilterGallery", "key": ""},
     {"id": "rename", "label": "시트 이름 일괄 바꾸기", "macro": "BookTools_RenameSheets", "tip": "찾아 바꾸기·앞에 붙이기", "icon": "Rename,RenameSheet", "key": ""},
     {"id": "prep", "label": "공유 전 정리", "macro": "BookTools_PrepShare", "tip": "A1·맨 위·배율 100%로", "icon": "DocumentInspect,InspectDocument,ReviewProtectWorkbook", "main": true, "key": ""},
     {"id": "backup", "label": "원클릭 백업", "macro": "BookTools_Backup", "tip": "날짜시각 복사본 저장", "icon": "FileSaveAs", "main": true, "key": ""},
