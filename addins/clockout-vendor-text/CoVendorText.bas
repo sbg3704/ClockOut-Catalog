@@ -11,7 +11,7 @@ Attribute VB_Name = "CoVendorText"
 '   직접 부를 때: Application.Run("'clockout-vendor-text.xlam'!CoVendor_Version"), Application.Run("'clockout-vendor-text.xlam'!CoVendor_Api")
 ' 팩토리(개체 CoVendorTextApi의 메서드, 모두 As Object로 늦은 바인딩):
 '   CoVendor_Regex() : 정규식 팩토리(CoVendorRegex, 순수 VBA 모드 고정): .Create(패턴, [플래그 "i" "m" "s" "g"]) → .Test .Match .MatchAll .Replace
-'   CoVendor_Html() : HTML 팩토리(stdHTML): .Create(태그) → .CreateChild .CreateLiteral .ToString
+'   CoVendor_Html() : HTML 팩토리(CoVendorHtml): .Create(태그, [속성 짝 배열]) .CreateFromHTML(글) → .CreateChild .CreateLiteral .ToString
 ' 주의: 판을 올릴 때 PACK_VERSION과 clockout-vendor-text.clockout.json의 version을 함께 고친다.
 ' 시험: Test_CoVendorText
 ' 의존: CoVendorTextApi.cls와 vendor.txt의 외부 원본. clockout-lib와 추가기능은 참조하지 않는다.
@@ -48,6 +48,7 @@ Public Sub Test_CoVendorText()
     h.CreateLiteral "안녕"
     s = h.ToString()
     f = f + Chk("HTML", InStr(s, "<p") > 0 And InStr(s, "</p>") > 0)
+    f = f + Chk("HTML 속성", InStr(api.CoVendor_Html().Create("a", Array("href", "x.html")).ToString(), "x.html") > 0)
     If f = 0 Then
         Debug.Print "CoVendorText 시험: 모두 통과"
         MsgBox "CoVendorText 시험: 모두 통과", vbInformation, "칼퇴"
