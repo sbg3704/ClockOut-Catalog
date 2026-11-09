@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "range-tools",
   "name": "범위 도구",
-  "version": "0.1.001",
+  "version": "0.1.002",
   "host": "excel",
   "group": "범위",
   "icon": "Table",

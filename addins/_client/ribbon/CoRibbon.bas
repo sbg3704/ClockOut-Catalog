@@ -13,9 +13,12 @@ Public Sub CoRibbon_Click(control As IRibbonControl)
     On Error GoTo EH
     macroName = control.Tag
     CoRibbon_Log "click " & macroName & " @ " & ThisWorkbook.Name
+    Application.StatusBar = "칼퇴: " & macroName & " 실행 중..."
     Application.Run "'" & ThisWorkbook.Name & "'!" & macroName
+    Application.StatusBar = "칼퇴: " & macroName & " 실행했습니다."
     Exit Sub
 EH:
+    Application.StatusBar = False
     CoRibbon_Log "error " & macroName & ": " & Err.Number & " " & Err.Description
     MsgBox "'" & macroName & "' 명령을 실행하지 못했습니다." & vbCrLf & Err.Description, vbExclamation, "칼퇴"
 End Sub

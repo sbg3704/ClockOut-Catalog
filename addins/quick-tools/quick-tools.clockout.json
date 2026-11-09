@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "quick-tools",
   "name": "빠른 셀 도구",
-  "version": "0.1.001",
+  "version": "0.1.002",
   "host": "excel",
   "group": "빠른 편집",
   "icon": "PasteValues",

@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "book-tools",
   "name": "통합 문서 도구",
-  "version": "0.1.001",
+  "version": "0.1.002",
   "host": "excel",
   "group": "통합 문서",
   "icon": "FileSaveAs",
