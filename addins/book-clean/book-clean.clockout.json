@@ -1,0 +1,18 @@
+{
+  "spec": 0,
+  "id": "book-clean",
+  "name": "문서 정리 도구",
+  "version": "0.1.000",
+  "host": "excel",
+  "author": "ClockOut",
+  "description": "시트 탭을 우클릭하면 '칼퇴 문서 정리' 메뉴가 나옵니다. 마지막 셀(Ctrl+End) 바로잡기, 외부 링크·깨진 이름 정리, 인쇄 설정 일괄 복사. 지우거나 바꾸기 전에 목록을 보여 주고 확인을 받습니다(실행 후 Ctrl+Z 불가).",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "데이터 끝 찾기·확인창에 공용 라이브러리를 씁니다"}
+  ],
+  "params": [
+    {"key": "lastAllSheets", "label": "마지막 셀 바로잡기를 모든 시트에", "type": "bool", "default": false, "help": "끄면 지금 보는 시트만"},
+    {"key": "linksBreakAction", "label": "외부 링크 처리", "type": "choice", "options": ["값으로 바꾸고 끊기", "건드리지 않기"], "default": "값으로 바꾸고 끊기"},
+    {"key": "pageCopyTitles", "label": "인쇄 설정 복사 때 반복 제목도 복사", "type": "bool", "default": false},
+    {"key": "pageCopyArea", "label": "인쇄 설정 복사 때 인쇄 영역도 복사", "type": "bool", "default": false}
+  ]
+}
