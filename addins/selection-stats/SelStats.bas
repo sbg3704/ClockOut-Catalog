@@ -104,7 +104,7 @@ Public Sub SelStats_Startup()
     On Error Resume Next
     Set api = CoLibClient_Api(MIN_LIB, ADDIN_NAME, True)
     mKey = DEFAULT_KEY
-    If Not api Is Nothing Then mKey = api.CoSetting_Text(ADDIN_ID, "keyToggle", DEFAULT_KEY)
+    If Not api Is Nothing Then mKey = api.CoSetting_Text(ADDIN_ID, "key.toggle", DEFAULT_KEY)
     If Len(mKey) > 0 Then Application.OnKey mKey, "'" & ThisWorkbook.Name & "'!SelStats_Toggle"
     If Not api Is Nothing Then
         If api.CoSetting_Bool(ADDIN_ID, "startOn", False) Then SelStats_On True

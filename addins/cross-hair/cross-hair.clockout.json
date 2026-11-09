@@ -7,78 +7,19 @@
   "author": "ClockOut",
   "description": "선택한 칸의 행과 열을 선(기본) 또는 연한 음영으로 표시해 큰 화면에서도 어느 칸인지 한눈에 보이게 합니다. 셀 값은 바꾸지 않고 표시용 서식 규칙만 걸며, 끄거나 저장할 때 자동으로 지웁니다.",
   "dependencies": [
-    {
-      "id": "clockout-lib",
-      "min_version": "0.1.001",
-      "reason": "설정 읽기와 안내 창에 공용 라이브러리를 씁니다"
-    }
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "설정 읽기와 안내 창에 공용 라이브러리를 씁니다"}
+  ],
+  "commands": [
+    {"id": "toggle", "label": "십자 음영 켜고 끄기", "macro": "CrossHair_Toggle", "tip": "선택한 칸의 행·열을 연한 색으로 표시", "key": ""}
   ],
   "params": [
-    {
-      "key": "style",
-      "label": "표시 방식",
-      "type": "choice",
-      "options": [
-        "선",
-        "선 + 연한 음영",
-        "음영만"
-      ],
-      "default": "선 + 연한 음영",
-      "help": "선: 행의 위·아래, 열의 좌·우 선. 음영은 칸의 원래 배경색을 덮으니 아주 연한 색을 권합니다"
-    },
-    {
-      "key": "lineColor",
-      "label": "보조 줄 선 색",
-      "type": "text",
-      "default": "#C5E4A8",
-      "help": "#RRGGBB 색 코드(예: 연한 연두 #C5E4A8)"
-    },
-    {
-      "key": "fillColor",
-      "label": "보조 줄 음영 색(같은 행·열의 칸)",
-      "type": "text",
-      "default": "#F0F9E6",
-      "help": "#RRGGBB 색 코드. 선택한 칸보다 연하게 두세요(예: #F0F9E6)"
-    },
-    {
-      "key": "activeFill",
-      "label": "선택한 칸에 색 넣기",
-      "type": "bool",
-      "default": true,
-      "help": "끄면 선택한 칸은 엑셀의 기본 테두리만 보입니다"
-    },
-    {
-      "key": "activeColor",
-      "label": "선택한 칸 색",
-      "type": "text",
-      "default": "#B7E58E",
-      "help": "#RRGGBB 색 코드. 보조 줄보다 진하게(예: 연두 #B7E58E)"
-    },
-    {
-      "key": "showRow",
-      "label": "행(가로줄) 음영",
-      "type": "bool",
-      "default": true
-    },
-    {
-      "key": "showCol",
-      "label": "열(세로줄) 음영",
-      "type": "bool",
-      "default": true,
-      "help": "행·열을 둘 다 끄면 둘 다 켠 것으로 봅니다"
-    },
-    {
-      "key": "startOn",
-      "label": "Excel을 켤 때 자동으로 켜기",
-      "type": "bool",
-      "default": false
-    },
-    {
-      "key": "keyToggle",
-      "label": "켜기/끄기 단축키",
-      "type": "text",
-      "default": "",
-      "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"
-    }
+    {"key": "style", "label": "표시 방식", "type": "choice", "options": ["선", "선 + 연한 음영", "음영만"], "default": "선 + 연한 음영", "help": "선: 행의 위·아래, 열의 좌·우 선. 음영은 칸의 원래 배경색을 덮으니 아주 연한 색을 권합니다"},
+    {"key": "lineColor", "label": "보조 줄 선 색", "type": "text", "default": "#C5E4A8", "help": "#RRGGBB 색 코드(예: 연한 연두 #C5E4A8)"},
+    {"key": "fillColor", "label": "보조 줄 음영 색(같은 행·열의 칸)", "type": "text", "default": "#F0F9E6", "help": "#RRGGBB 색 코드. 선택한 칸보다 연하게 두세요(예: #F0F9E6)"},
+    {"key": "activeFill", "label": "선택한 칸에 색 넣기", "type": "bool", "default": true, "help": "끄면 선택한 칸은 엑셀의 기본 테두리만 보입니다"},
+    {"key": "activeColor", "label": "선택한 칸 색", "type": "text", "default": "#B7E58E", "help": "#RRGGBB 색 코드. 보조 줄보다 진하게(예: 연두 #B7E58E)"},
+    {"key": "showRow", "label": "행(가로줄) 음영", "type": "bool", "default": true},
+    {"key": "showCol", "label": "열(세로줄) 음영", "type": "bool", "default": true, "help": "행·열을 둘 다 끄면 둘 다 켠 것으로 봅니다"},
+    {"key": "startOn", "label": "Excel을 켤 때 자동으로 켜기", "type": "bool", "default": false}
   ]
 }

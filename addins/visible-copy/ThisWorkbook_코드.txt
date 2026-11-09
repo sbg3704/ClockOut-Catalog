@@ -1,0 +1,19 @@
+' 기능: 추가기능(.xlam)을 켤 때 우클릭 메뉴와 단축키를 등록하고 끌 때 해제한다.
+' 사용법: VBA 편집기에서 ThisWorkbook(현재_통합_문서)을 열어 아래 내용을 붙여 넣는다.
+' 주의: 공용 라이브러리가 아직 안 켜졌을 수 있어 OnTime으로 조금 뒤에 시작한다.
+' 의존: VisibleCopy.bas
+
+Private Sub Workbook_Open()
+    On Error Resume Next
+    Application.OnTime Now, "'" & ThisWorkbook.Name & "'!VisibleCopy_Startup"
+End Sub
+
+Private Sub Workbook_AddinUninstall()
+    On Error Resume Next
+    VisibleCopy_Shutdown
+End Sub
+
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    On Error Resume Next
+    VisibleCopy_Shutdown
+End Sub
