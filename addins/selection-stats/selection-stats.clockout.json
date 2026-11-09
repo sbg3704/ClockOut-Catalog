@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "selection-stats",
   "name": "선택 요약 크게 보기",
-  "version": "0.1.001",
+  "version": "0.1.002",
   "host": "excel",
   "group": "선택 요약",
   "icon": "AutoSum",

@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "cross-hair",
   "name": "십자 음영",
-  "version": "0.1.001",
+  "version": "0.1.002",
   "host": "excel",
   "group": "십자 음영",
   "icon": "ViewGridlinesToggleExcel,ViewGridlines",
