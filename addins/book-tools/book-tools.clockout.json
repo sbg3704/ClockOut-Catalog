@@ -2,8 +2,10 @@
   "spec": 0,
   "id": "book-tools",
   "name": "통합 문서 도구",
-  "version": "0.1.000",
+  "version": "0.1.001",
   "host": "excel",
+  "group": "통합 문서",
+  "icon": "FileSaveAs",
   "category": "시트·문서",
   "author": "ClockOut",
   "description": "숨은 시트를 한 번에 보이게 하거나 선택한 시트만 남깁니다. 시트 탭 이름순 정렬과 시트 이름 일괄 바꾸기를 합니다. 공유 전 정리, 원클릭 백업, 선택 시트를 PDF 하나로 저장합니다. 양식의 입력 칸만 비우고 수식은 유지합니다.",
@@ -11,14 +13,14 @@
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "자연 순서 비교·파일 처리·확인창에 공용 라이브러리를 씁니다"}
   ],
   "commands": [
-    {"id": "showall", "label": "숨은 시트 모두 보이기", "macro": "BookTools_ShowAll", "tip": "숨은 시트를 한 번에 표시", "key": ""},
-    {"id": "hideothers", "label": "선택 시트만 남기기", "macro": "BookTools_HideOthers", "tip": "선택한 시트 외 숨김", "key": ""},
-    {"id": "sorttabs", "label": "시트 탭 이름순 정렬", "macro": "BookTools_SortTabs", "tip": "1호, 2호, 10호 순서", "key": ""},
-    {"id": "rename", "label": "시트 이름 일괄 바꾸기", "macro": "BookTools_RenameSheets", "tip": "찾아 바꾸기·앞에 붙이기", "key": ""},
-    {"id": "prep", "label": "공유 전 정리", "macro": "BookTools_PrepShare", "tip": "A1·맨 위·배율 100%로", "key": ""},
-    {"id": "backup", "label": "원클릭 백업", "macro": "BookTools_Backup", "tip": "날짜시각 복사본 저장", "icon": "FileSaveAs", "key": ""},
-    {"id": "pdf", "label": "선택 시트를 PDF로", "macro": "BookTools_ExportPdf", "tip": "고른 시트를 PDF 하나로", "key": ""},
-    {"id": "clearinputs", "label": "입력 칸 비우기", "macro": "BookTools_ClearInputs", "tip": "수식 유지, 상수만 지움", "key": ""}
+    {"id": "showall", "label": "숨은 시트 모두 보이기", "macro": "BookTools_ShowAll", "tip": "숨은 시트를 한 번에 표시", "icon": "SheetUnhide,UnhideSheet,WorksheetUnhide", "key": ""},
+    {"id": "hideothers", "label": "선택 시트만 남기기", "macro": "BookTools_HideOthers", "tip": "선택한 시트 외 숨김", "icon": "SheetHide,HideSheet,WorksheetHide", "key": ""},
+    {"id": "sorttabs", "label": "시트 탭 이름순 정렬", "macro": "BookTools_SortTabs", "tip": "1호, 2호, 10호 순서", "icon": "SortAscending", "key": ""},
+    {"id": "rename", "label": "시트 이름 일괄 바꾸기", "macro": "BookTools_RenameSheets", "tip": "찾아 바꾸기·앞에 붙이기", "icon": "Rename,RenameSheet", "key": ""},
+    {"id": "prep", "label": "공유 전 정리", "macro": "BookTools_PrepShare", "tip": "A1·맨 위·배율 100%로", "icon": "DocumentInspect,InspectDocument,ReviewProtectWorkbook", "main": true, "key": ""},
+    {"id": "backup", "label": "원클릭 백업", "macro": "BookTools_Backup", "tip": "날짜시각 복사본 저장", "icon": "FileSaveAs", "main": true, "key": ""},
+    {"id": "pdf", "label": "선택 시트를 PDF로", "macro": "BookTools_ExportPdf", "tip": "고른 시트를 PDF 하나로", "icon": "FileSaveAsPdfOrXps,ExportToPdf", "key": ""},
+    {"id": "clearinputs", "label": "입력 칸 비우기", "macro": "BookTools_ClearInputs", "tip": "수식 유지, 상수만 지움", "icon": "ClearAll,ClearContents,Clear", "key": ""}
   ],
   "params": [
     {"key": "showVeryHidden", "label": "숨은 시트 보이기에 '완전히 숨김' 시트도 포함", "type": "bool", "default": false},

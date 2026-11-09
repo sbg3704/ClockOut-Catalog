@@ -91,6 +91,7 @@ try {
     $modules = @()
     foreach ($f in $srcFiles) {
         $text = [IO.File]::ReadAllText($f.FullName, [Text.Encoding]::UTF8)
+        if ($f.Name -eq 'CoRibbon.bas') { $text = $text.Replace('CoRibbon_Click', 'CoRibbon_Click_' + ($outId -replace '[^A-Za-z0-9]', '_')) }
         $text = ($text -replace "`r`n", "`n") -replace "`n", "`r`n"
         try { $bytes = $cp949.GetBytes($text) }
         catch { Fail "$($f.Name): CP949로 쓸 수 없는 글자가 있습니다. (이모지·특수문자 등) 해당 글자를 고쳐 주세요." }
@@ -249,28 +250,41 @@ try {
         Add-Type -AssemblyName System.IO.Compression
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         $esc = { param($t) [Security.SecurityElement]::Escape([string]$t) }
-        # 분류(category)마다 그룹 하나(같은 idQ라 여러 추가기능이 한 그룹으로 합쳐짐). 명령이 3개 이상이면 추가기능 이름의 드롭다운 안에 넣는다.
+        # 추가기능마다 그룹 하나(id가 추가기능별로 달라 겹치지 않음). main:true 명령은 큰 단추, 나머지는 작은 단추(3줄씩 쌓임), 작은 단추가 6개를 넘으면 나머지는 "더 보기" 드롭다운으로.
         $aid = ($outId -replace '[^A-Za-z0-9]', '_')
-        $aname = if ($declObj.name) { [string]$declObj.name } else { $outId }
-        $cat = if ($declObj.category) { [string]$declObj.category } else { '기타' }
-        $catMap = @{ '값 정리' = 'value'; '표·범위' = 'range'; '시트·문서' = 'book'; '보기·선택' = 'view'; '사진·도형' = 'shape'; '기타' = 'misc' }
-        $gid = 'grp_' + $(if ($catMap.ContainsKey($cat)) { $catMap[$cat] } else { 'c' + ([BitConverter]::ToString([Security.Cryptography.MD5]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($cat))) -replace '-', '').Substring(0, 8) })
+        $gname = if ($declObj.group) { [string]$declObj.group } elseif ($declObj.name) { [string]$declObj.name } else { $outId }
         $aicon = if ($declObj.icon) { [string]$declObj.icon } else { 'MacroPlay' }
-        $useMenu = ($cmds.Count -ge 3)
-        $btns = New-Object Text.StringBuilder
-        foreach ($c in $cmds) {
-            $icon = if ($c.icon) { [string]$c.icon } else { $aicon }
+        $okIcon = { param($list)
+            foreach ($n in ([string]$list -split ',')) { $n = $n.Trim(); if (-not $n) { continue }
+                try { $pic = $xl.CommandBars.GetImageMso($n, 16, 16); if ($pic) { return $n } } catch {} }
+            return $null }
+        $badIcons = @()
+        $mk = { param($c, $large, $ind)
+            $want = if ($c.icon) { [string]$c.icon } else { $aicon }
+            $icon = & $okIcon $want
+            if (-not $icon) { $script:badIcons += $want; $icon = & $okIcon $aicon; if (-not $icon) { $icon = 'MacroPlay' } }
             $tip = if ($c.tip) { " screentip=`"$(& $esc $c.label)`" supertip=`"$(& $esc $c.tip)`"" } else { '' }
-            $sz = if ($useMenu) { '' } else { ' size="large"' }
-            $ind = if ($useMenu) { '          ' } else { '      ' }
-            [void]$btns.Append("$ind<button idQ=`"ck:btn_${aid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`"$sz tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click`"$tip />`n")
+            $sz = if ($large) { ' size="large"' } else { '' }
+            "$ind<button idQ=`"ck:btn_${aid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`"$sz tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click_$aid`"$tip />`n" }
+        $larges = @($cmds | Where-Object { $_.main -eq $true })
+        $smalls = @($cmds | Where-Object { $_.main -ne $true })
+        if ($larges.Count -eq 0 -and $smalls.Count -le 3) { $larges = $smalls; $smalls = @() }
+        $inner = New-Object Text.StringBuilder
+        foreach ($c in $larges) { [void]$inner.Append((& $mk $c $true '      ')) }
+        $shown = if ($smalls.Count -gt 6) { $smalls[0..4] } else { $smalls }
+        foreach ($c in $shown) { [void]$inner.Append((& $mk $c $false '      ')) }
+        if ($smalls.Count -gt 6) {
+            $mi = & $okIcon 'MacroPlay'
+            [void]$inner.Append("      <menu idQ=`"ck:mnu_$aid`" label=`"더 보기`" imageMso=`"$mi`">`n")
+            foreach ($c in $smalls[5..($smalls.Count - 1)]) { [void]$inner.Append((& $mk $c $false '        ')) }
+            [void]$inner.Append("      </menu>`n")
         }
-        $inner = if ($useMenu) { "      <menu idQ=`"ck:mnu_$aid`" label=`"$(& $esc $aname)`" imageMso=`"$(& $esc $aicon)`" size=`"large`">`n" + $btns.ToString() + "      </menu>`n" } else { $btns.ToString() }
+        if ($badIcons.Count) { Write-Host "[알림] 쓸 수 없는 아이콘 이름이라 기본 아이콘으로 바꿨습니다: $(($badIcons | Select-Object -Unique) -join ', ')" -ForegroundColor Yellow }
         $ui = "<?xml version=`"1.0`" encoding=`"UTF-8`" standalone=`"yes`"?>`n" +
               "<customUI xmlns=`"http://schemas.microsoft.com/office/2009/07/customui`" xmlns:ck=`"urn:clockout:ribbon`">`n" +
               "  <ribbon>`n    <tabs>`n" +
               "    <tab idQ=`"ck:main`" label=`"칼퇴`" insertAfterMso=`"TabView`">`n" +
-              "     <group idQ=`"ck:$gid`" label=`"$(& $esc $cat)`">`n" + $inner + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"
+              "     <group idQ=`"ck:grp_$aid`" label=`"$(& $esc $gname)`">`n" + $inner.ToString() + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"
         $utf8 = New-Object Text.UTF8Encoding($false)
         $za = [IO.Compression.ZipFile]::Open($xlam, 'Update')
         try {

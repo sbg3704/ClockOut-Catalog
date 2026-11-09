@@ -2,8 +2,10 @@
   "spec": 0,
   "id": "value-tools",
   "name": "값 정리 도구",
-  "version": "0.1.000",
+  "version": "0.1.001",
   "host": "excel",
+  "group": "값 정리",
+  "icon": "FindDialog,Find",
   "category": "값 정리",
   "author": "ClockOut",
   "description": "셀 우클릭 메뉴에서 값을 한 번에 고칩니다. 공백·숨은문자 정리, 텍스트 숫자 변환, 병합 해제 후 값 채우기, 빈 칸 채우기를 합니다. 올림·절사, 한글 금액(일금 ○○원정), 두 열 비교도 됩니다. 바꾸기 전에 칸 수를 알리고 확인을 받습니다.",
@@ -11,13 +13,13 @@
     {"id": "clockout-lib", "min_version": "0.1.001", "reason": "선택 처리·확인창·숫자와 글자 처리에 공용 라이브러리를 씁니다"}
   ],
   "commands": [
-    {"id": "cleanspaces", "label": "공백·숨은문자 정리", "macro": "ValueFix_CleanSpaces", "tip": "앞뒤·중복 공백과 숨은 문자 제거", "key": ""},
-    {"id": "texttonum", "label": "텍스트 숫자를 숫자로", "macro": "ValueFix_TextToNumber", "tip": "\"1,200\" 같은 글자를 숫자로", "key": ""},
-    {"id": "unmerge", "label": "병합 해제 + 값 채우기", "macro": "ValueFix_UnmergeFill", "tip": "병합을 풀고 값을 채움", "key": ""},
-    {"id": "filldown", "label": "빈 칸을 위 값으로 채우기", "macro": "ValueFix_FillBlankDown", "tip": "빈 칸에 바로 위 값을 채움", "key": ""},
-    {"id": "round", "label": "올림·절사·반올림", "macro": "ValueMath_RoundValues", "tip": "실제 값을 단위로 바꿈", "key": ""},
-    {"id": "won", "label": "한글 금액", "macro": "ValueMath_KoreanWon", "tip": "일금 ○○원정", "key": ""},
-    {"id": "diff", "label": "두 열 다른 칸 선택", "macro": "ValueCompare_SelectDiff", "tip": "두 열을 비교해 다른 줄 선택", "key": ""}
+    {"id": "cleanspaces", "label": "공백·숨은문자 정리", "macro": "ValueFix_CleanSpaces", "tip": "앞뒤·중복 공백과 숨은 문자 제거", "icon": "ClearFormats,Clear", "main": true, "key": ""},
+    {"id": "texttonum", "label": "텍스트 숫자를 숫자로", "macro": "ValueFix_TextToNumber", "tip": "\"1,200\" 같은 글자를 숫자로", "icon": "TextToColumns,DataTextToColumns,NumberFormatGeneral", "main": true, "key": ""},
+    {"id": "unmerge", "label": "병합 해제 + 값 채우기", "macro": "ValueFix_UnmergeFill", "tip": "병합을 풀고 값을 채움", "icon": "UnmergeCells,MergeCenter", "key": ""},
+    {"id": "filldown", "label": "빈 칸을 위 값으로 채우기", "macro": "ValueFix_FillBlankDown", "tip": "빈 칸에 바로 위 값을 채움", "icon": "FillDown", "key": ""},
+    {"id": "round", "label": "올림·절사·반올림", "macro": "ValueMath_RoundValues", "tip": "실제 값을 단위로 바꿈", "icon": "DecreaseDecimal", "key": ""},
+    {"id": "won", "label": "한글 금액", "macro": "ValueMath_KoreanWon", "tip": "일금 ○○원정", "icon": "CurrencyStyle,AccountingFormat,Currency", "key": ""},
+    {"id": "diff", "label": "두 열 다른 칸 선택", "macro": "ValueCompare_SelectDiff", "tip": "두 열을 비교해 다른 줄 선택", "icon": "SelectAll,ConditionalFormattingHighlightCellsRules", "key": ""}
   ],
   "params": [
     {"key": "keepLineBreak", "label": "공백 정리 때 줄바꿈은 남기기", "type": "bool", "default": true},
