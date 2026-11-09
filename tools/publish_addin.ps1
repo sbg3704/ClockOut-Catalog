@@ -46,7 +46,7 @@ $tag = "$outId-$($decl.version)"
 $url = "https://github.com/$repoSlug/releases/download/$tag/$outId.zip"
 $entry = [ordered]@{
     id = $outId; name = [string]$decl.name; version = [string]$decl.version
-    author = [string]$decl.author; host = [string]$decl.host; description = [string]$decl.description
+    author = [string]$decl.author; host = [string]$decl.host; category = [string]$decl.category; description = [string]$decl.description
     url = $url; sha256 = $sha; size = $size
 }
 Write-Host "태그: $tag"; Write-Host "SHA-256: $sha"; Write-Host "주소: $url"
