@@ -1,0 +1,10 @@
+# 이 묶음에 함께 컴파일하는 외부 원본(vendor/vba/ 기준 경로). 원본은 고치지 않는다. 출처: vendor/vba/SOURCES.md
+stdVBA/src/stdICallable.cls
+stdVBA/src/stdClipboard.cls
+stdVBA/src/stdPerformance.cls
+stdVBA/src/stdReg.cls
+stdVBA/src/stdProcess.cls
+stdVBA/src/stdAcc.cls
+stdVBA/src/stdWindow.cls
+stdVBA/src/stdImage.cls
+stdVBA/src/stdCOM.cls

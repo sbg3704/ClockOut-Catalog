@@ -1,0 +1,40 @@
+{
+  "spec": 0,
+  "id": "vendor-sample",
+  "name": "JSON 보기 좋게(예제)",
+  "version": "0.1.000",
+  "host": "excel",
+  "category": "예제",
+  "author": "ClockOut",
+  "description": "선택한 칸의 JSON 글을 2칸 들여쓰기로 보기 좋게 바꾸거나 한 줄로 줄입니다. JSON이 아닌 칸은 건너뜁니다. 외부 라이브러리 묶음(clockout-vendor-data)을 불러 쓰는 방법을 보여 주는 예제라 카탈로그에는 올리지 않습니다.",
+  "dependencies": [
+    {
+      "id": "clockout-lib",
+      "min_version": "0.1.001",
+      "reason": "선택 범위 검사와 안내 창에 공용 라이브러리를 씁니다"
+    },
+    {
+      "id": "clockout-vendor-data",
+      "min_version": "0.1.000",
+      "reason": "JSON 읽기·쓰기에 VBA-JSON 묶음을 씁니다"
+    }
+  ],
+  "commands": [
+    {
+      "id": "pretty",
+      "label": "JSON 보기 좋게",
+      "macro": "VendorSample_Pretty",
+      "tip": "선택한 칸의 JSON을 2칸 들여쓰기로",
+      "icon": "FormatPainter",
+      "key": ""
+    },
+    {
+      "id": "compact",
+      "label": "JSON 한 줄로",
+      "macro": "VendorSample_Compact",
+      "tip": "선택한 칸의 JSON을 한 줄로",
+      "icon": "Collapse",
+      "key": ""
+    }
+  ]
+}

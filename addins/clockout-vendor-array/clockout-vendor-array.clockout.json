@@ -1,0 +1,12 @@
+{
+  "spec": 0,
+  "id": "clockout-vendor-array",
+  "name": "칼퇴 외부 라이브러리: 배열(BetterArray·stdArray·람다)",
+  "version": "0.1.000",
+  "host": "excel",
+  "type": "library",
+  "category": "라이브러리",
+  "author": "ClockOut (원본: Nick Morgan / Senipah, James Warren / sancarn)",
+  "license": "MIT (원본 LICENSE 전문을 zip의 licenses/에 함께 넣음)",
+  "description": "배열 정렬·검색·변환(BetterArray, stdArray), 지연 목록(stdEnumerator), 글로 쓰는 작은 함수(stdLambda), 매크로 호출 개체(stdCallback)를 제공합니다. 원본은 VBA-Better-Array와 stdVBA(MIT)이며 고치지 않았습니다."
+}

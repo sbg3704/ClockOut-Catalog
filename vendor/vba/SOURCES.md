@@ -24,5 +24,17 @@
 
 그 밖에 라이선스가 분명하지 않은 웹 코드 모음(Chip Pearson 등)과 VBA 편집기 도구인 Rubberduck(GPL, 라이브러리 아님)도 받지 않았다.
 
-## 묶음
-이 폴더 전체를 `vba-vendor.zip` 하나로 묶어 Release에 올리고 `catalog.json`의 `libraries`에 SHA-256과 함께 등록한다. 공용 lib(`addins/_common`, clockout-lib)와는 별개 묶음이다. 빌드 스크립트(`tools/build_addin.ps1`)와 `tools/vba_encode.py`는 `addins/`만 보므로 이 폴더를 자동으로 넣지 않는다. 쓸 때는 필요한 파일만 추가기능 폴더로 복사한다.
+## 묶음 (2026-11-09부터: 라이브러리 .xlam 4개)
+이 폴더의 원본을 **고치지 않고** 층·형식별 라이브러리 .xlam으로 컴파일해 따로 배포한다. 각 묶음 폴더(`addins/clockout-vendor-*/`)의 `vendor.txt`가 넣을 원본 파일을 정하고, `tools/build_addin.ps1`이 그 파일을 함께 컴파일하며 zip의 `licenses/`에 해당 `LICENSE` 전문과 이 표를 넣는다.
+
+| 묶음 | 넣은 원본 | 뺀 것과 이유 |
+|---|---|---|
+| `clockout-vendor-data` | VBA-Dictionary `Dictionary.cls`, VBA-JSON `JsonConverter.bas` | VBA-UTC `UtcConverter.bas`: JsonConverter가 같은 이름의 공개 함수(ParseUtc·ConvertToUtc·ParseIso·ConvertToIso)를 이미 가지고 있어 중복 선언이 됨. 날짜 변환은 JsonConverter 쪽을 씀 |
+| `clockout-vendor-text` | stdVBA `stdRegex.cls`, `stdHTML.cls` | |
+| `clockout-vendor-array` | VBA-Better-Array `BetterArray.cls`, stdVBA `stdICallable`·`stdArray`·`stdEnumerator`·`stdLambda`·`stdCallback` | Better-Array의 시험·예제 파일(`TestModule_*`, `ValuesList_*`, `ArrayGenerator` 등): 라이브러리 본체가 아님 |
+| `clockout-vendor-sys` | stdVBA `stdICallable`·`stdClipboard`·`stdPerformance`·`stdReg`·`stdProcess`·`stdAcc`·`stdWindow`·`stdImage`·`stdCOM` | `stdTimer`: 'VBA 프로젝트 개체 모델 접근 신뢰'와 숨김 통합 문서가 필요함. `stdUIElement`: MSForms 참조가 필요함(사용자 정의 폼 전용). `stdHTTP`·`stdWebSocket`·`stdWebView`·`stdFiber`·`stdSentry`·`stdRibbon`: 네트워크·실험 기능이라 다음 판에 따로 논의 |
+| (다음 판) | VBA-Web | `WebHelpers.bas`가 JSON·UTC 공개 함수 6개를 같은 이름으로 또 선언함. 네트워크 기능은 오프라인 원칙과 함께 따로 정함 |
+
+- 의존 관계(주석을 뺀 코드 기준): 바닥은 `stdICallable`과 `Dictionary`이고 나머지는 이 둘에만 기대거나 혼자 돈다. `stdWindow`는 `stdAcc`에 기댄다. 묶음끼리는 서로 부르지 않는다.
+- CP949에 없는 글자(예: `stdImage.cls` 주석의 é)는 컴파일용 사본에서만 `?`로 바꾼다. 이 폴더의 원본은 그대로다.
+- 예전 소스 모음 `vba-vendor.zip`(`catalog.json`의 `libraries`)은 묶음 4개를 올리면서 카탈로그에서 뺀다.

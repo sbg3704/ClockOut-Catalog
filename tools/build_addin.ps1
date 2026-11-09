@@ -2,13 +2,14 @@
 .SYNOPSIS
   추가기능(addins/<id>/)을 Windows용 Excel에서 컴파일해 <id>.xlam과 <id>.zip으로 만든다.
 .DESCRIPTION
-  1) addins/<id>/*.bas(.cls) + addins/_common/*.bas 를 CP949+CRLF로 임시 변환
+  1) addins/<id>/*.bas(.cls) + (선언에 따라) addins/_common 또는 연결부(_client) + vendor.txt의 외부 원본을 CP949+CRLF로 임시 변환
   2) 보이지 않는 Excel(Visible=False)에서 새 통합 문서에 가져오기, ThisWorkbook_*.txt가 있으면 ThisWorkbook에 넣기
   3) VBE 'VBAProject 컴파일'(CommandBars Id 578)이 끝나 비활성이 되는지로 컴파일 성공 판정
   4) out\<id>.xlam(xlFileFormat 55)과 out\<id>.zip(docs/03 패키지 규격) 만들기
   키보드 입력·SendKeys·화면 조작은 하지 않는다. 이 스크립트가 띄운 Excel만 종료한다.
 .PARAMETER Addin     addins\ 아래 폴더 이름(= 추가기능 id). `_common`을 주면 공용 라이브러리만 컴파일해 clockout-lib.xlam/.zip으로 만든다
-.PARAMETER RunTests  Test_ 로 시작하는 Public Sub를 시험용 사본에서 실행(창이 뜨지 않게 MsgBox는 기록으로 바꿈)
+.PARAMETER RunTests  Test_ 로 시작하는 Public Sub를 시험용 사본에서 실행(창이 뜨지 않게 MsgBox는 기록으로 바꿈).
+                     선언 dependencies의 라이브러리(clockout-lib, clockout-vendor-*)가 OutDir에 .xlam으로 있으면 시험 전에 읽기 전용으로 연다
 .PARAMETER OutDir    출력 폴더(기본: 저장소 루트의 out)
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools\build_addin.ps1 -Addin image-fit
@@ -34,6 +35,7 @@ $repo = Split-Path -Parent $PSScriptRoot
 $addinDir = Join-Path $repo "addins\$Addin"
 $commonDir = Join-Path $repo 'addins\_common'
 $clientDir = Join-Path $repo 'addins\_client'
+$vendorRoot = Join-Path $repo 'vendor\vba'
 $isLib = ($Addin -eq '_common')
 $outId = if ($isLib) { 'clockout-lib' } else { $Addin }
 if (-not $isLib -and $Addin -notmatch '^[a-z0-9-]+$') { Write-Host "[중단] 추가기능 id는 영문 소문자·숫자·하이픈만 쓸 수 있습니다: $Addin" -ForegroundColor Red; exit 1 }
@@ -43,23 +45,38 @@ if (-not $OutDir) { $OutDir = Join-Path $repo 'out' }
 # --- CP949 인코더(Windows PowerShell 5.1과 PowerShell 7 모두) ---
 try { [Text.Encoding]::RegisterProvider([Text.CodePagesEncodingProvider]::Instance) } catch {}
 $cp949 = [Text.Encoding]::GetEncoding(949, (New-Object Text.EncoderExceptionFallback), (New-Object Text.DecoderExceptionFallback))
+# 외부 원본 전용: CP949에 없는 글자(주석의 é 등)는 ?로 바꿔 컴파일용 사본에만 쓴다(저장소의 원본은 그대로).
+$cp949Lenient = [Text.Encoding]::GetEncoding(949, (New-Object Text.EncoderReplacementFallback('?')), (New-Object Text.DecoderReplacementFallback('?')))
 
 # --- 소스 모으기 ---
-# 공용 lib를 따로 설치해 쓰는 추가기능(선언의 dependencies에 clockout-lib이 있고 bundled가 아님)은 lib 소스 대신
-# addins\_client\CoLibClient.bas(얇은 연결부)를 넣는다. 그렇지 않으면 예전처럼 addins\_common 소스를 함께 컴파일한다.
+# 선언(*.clockout.json)으로 무엇을 함께 넣을지 정한다.
+#  - type "library"(외부 라이브러리 묶음 clockout-vendor-* 등): 자기 폴더 + vendor.txt의 외부 원본만. lib·연결부는 넣지 않는다.
+#  - dependencies에 clockout-lib(bundled 아님): lib 소스 대신 addins\_client\CoLibClient.bas(얇은 연결부)
+#  - dependencies에 clockout-vendor-*: addins\_client\CoVendorClient.bas
+#  - clockout-lib이 bundled이거나, 선언·dependencies가 없으면(예전 방식): addins\_common 소스를 함께 컴파일
 $srcExt = '.bas', '.cls', '.frm'
 $declFile = Get-ChildItem $addinDir -File -Filter '*.clockout.json' | Select-Object -First 1
-$useClient = $false
-if ($declFile -and -not $isLib) {
-    try {
-        $declObj = [IO.File]::ReadAllText($declFile.FullName, [Text.Encoding]::UTF8) | ConvertFrom-Json
-        foreach ($dep in @($declObj.dependencies)) { if ($dep.id -eq 'clockout-lib' -and -not $dep.bundled) { $useClient = $true } }
-    } catch { Write-Host "[중단] 선언 파일을 읽을 수 없습니다: $($declFile.Name) ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
+$declObj = $null
+if ($declFile) {
+    try { $declObj = [IO.File]::ReadAllText($declFile.FullName, [Text.Encoding]::UTF8) | ConvertFrom-Json }
+    catch { Write-Host "[중단] 선언 파일을 읽을 수 없습니다: $($declFile.Name) ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
 }
+$isPack = ($declObj -and ([string]$declObj.type) -eq 'library' -and -not $isLib)
+$libDep = $null; $vendorDeps = @()
+if ($declObj -and -not $isLib -and -not $isPack) {
+    foreach ($dep in @($declObj.dependencies)) {
+        if (-not $dep) { continue }
+        if ($dep.id -eq 'clockout-lib') { $libDep = $dep }
+        elseif ([string]$dep.id -like 'clockout-vendor-*') { $vendorDeps += $dep }
+    }
+}
+$useClient = [bool]($libDep -and -not $libDep.bundled)
+$useVendorClient = ($vendorDeps.Count -gt 0)
+$bundleCommon = (-not $isLib -and -not $isPack -and -not $useClient -and -not ($useVendorClient -and -not $libDep))
 # 선언에 commands가 있으면 리본 버튼을 만든다(칼퇴 탭). 클릭 처리 모듈 CoRibbon.bas를 함께 넣고, 저장 뒤 .xlam에 리본 XML을 끼운다.
 $cmds = @()
 if ($declObj -and $declObj.commands) { $cmds = @($declObj.commands) }
-$hasCommands = ($cmds.Count -gt 0 -and -not $isLib)
+$hasCommands = ($cmds.Count -gt 0 -and -not $isLib -and -not $isPack)
 if ($hasCommands) {
     foreach ($c in $cmds) {
         if ($c.id -notmatch '^[A-Za-z][A-Za-z0-9_]*$') { Write-Host "[중단] commands의 id는 영문으로 시작하는 영문·숫자·밑줄이어야 합니다: $($c.id)" -ForegroundColor Red; exit 1 }
@@ -68,17 +85,34 @@ if ($hasCommands) {
     }
     if (($cmds | Group-Object id | Where-Object { $_.Count -gt 1 })) { Write-Host "[중단] commands의 id가 겹칩니다." -ForegroundColor Red; exit 1 }
 }
+# vendor.txt: 함께 컴파일할 외부 원본(vendor\vba 기준 경로, 한 줄에 하나, #은 주석). 원본은 고치지 않는다.
+$vendorFiles = @(); $vendorDirs = @()
+$vendorList = Join-Path $addinDir 'vendor.txt'
+if (Test-Path $vendorList) {
+    foreach ($ln in [IO.File]::ReadAllLines($vendorList, [Text.Encoding]::UTF8)) {
+        $rel = $ln.Trim()
+        if (-not $rel -or $rel.StartsWith('#')) { continue }
+        $vp = Join-Path $vendorRoot ($rel -replace '/', '\')
+        if (-not (Test-Path $vp -PathType Leaf)) { Write-Host "[중단] vendor.txt의 파일이 없습니다: vendor\vba\$rel" -ForegroundColor Red; exit 1 }
+        $vendorFiles += Get-Item $vp
+        $top = ($rel -split '/')[0]
+        if ($vendorDirs -notcontains $top) { $vendorDirs += $top }
+    }
+}
+$vendorSet = @{}; foreach ($vf in $vendorFiles) { $vendorSet[$vf.FullName] = $true }
 $srcFiles = @()
 $srcFiles += Get-ChildItem $addinDir -File | Where-Object { $_.Extension -in $srcExt }
 if ($hasCommands) { $srcFiles += Get-ChildItem (Join-Path $clientDir 'ribbon') -File -Filter 'CoRibbon.bas' }
-if (-not $isLib) {
-    if ($useClient) { if (Test-Path $clientDir) { $srcFiles += Get-ChildItem $clientDir -File | Where-Object { $_.Extension -in $srcExt } } }
-    elseif (Test-Path $commonDir) { $srcFiles += Get-ChildItem $commonDir -File | Where-Object { $_.Extension -in $srcExt } }
-}
+if ($useClient) { $srcFiles += Get-Item (Join-Path $clientDir 'CoLibClient.bas') }
+if ($useVendorClient) { $srcFiles += Get-Item (Join-Path $clientDir 'CoVendorClient.bas') }
+if ($bundleCommon -and (Test-Path $commonDir)) { $srcFiles += Get-ChildItem $commonDir -File | Where-Object { $_.Extension -in $srcExt } }
+$srcFiles += $vendorFiles
 $dups = $srcFiles | Group-Object Name | Where-Object { $_.Count -gt 1 }
 if ($dups) { Write-Host "[중단] 같은 이름의 모듈 파일이 여러 폴더에 있습니다: $(($dups | ForEach-Object Name) -join ', ')" -ForegroundColor Red; exit 1 }
 if (-not $srcFiles) { Write-Host "[중단] 가져올 .bas 파일이 없습니다." -ForegroundColor Red; exit 1 }
 if ($useClient) { Write-Host "공용 lib는 따로 설치해 쓰는 방식입니다(CoLibClient 연결부를 넣습니다)." }
+if ($useVendorClient) { Write-Host "외부 라이브러리 묶음을 따로 설치해 씁니다: $(($vendorDeps | ForEach-Object { $_.id }) -join ', ') (CoVendorClient 연결부를 넣습니다)." }
+if ($isPack) { Write-Host "라이브러리 묶음입니다: 자기 모듈 + 외부 원본 $($vendorFiles.Count)개(vendor.txt)." }
 $twFile = Get-ChildItem $addinDir -File -Filter 'ThisWorkbook_*.txt' | Select-Object -First 1
 $readme = Join-Path $addinDir 'README.md'
 
@@ -93,7 +127,11 @@ try {
         $text = [IO.File]::ReadAllText($f.FullName, [Text.Encoding]::UTF8)
         $text = ($text -replace "`r`n", "`n") -replace "`n", "`r`n"
         try { $bytes = $cp949.GetBytes($text) }
-        catch { Fail "$($f.Name): CP949로 쓸 수 없는 글자가 있습니다. (이모지·특수문자 등) 해당 글자를 고쳐 주세요." }
+        catch {
+            if (-not $vendorSet.ContainsKey($f.FullName)) { Fail "$($f.Name): CP949로 쓸 수 없는 글자가 있습니다. (이모지·특수문자 등) 해당 글자를 고쳐 주세요." }
+            $bytes = $cp949Lenient.GetBytes($text)
+            Info "  참고: 외부 원본 $($f.Name)에 CP949에 없는 글자가 있어 컴파일용 사본에서만 ?로 바꿨습니다."
+        }
         $outPath = Join-Path $encDir $f.Name
         [IO.File]::WriteAllBytes($outPath, $bytes)
         $frx = [IO.Path]::ChangeExtension($f.FullName, '.frx')
@@ -219,6 +257,15 @@ try {
                 try { [IO.File]::WriteAllBytes($tp, $cp949.GetBytes($t)) } catch { Fail "시험용 사본 변환 실패: $($m.Name) (임시 폴더 경로에 CP949로 쓸 수 없는 글자가 있을 수 있음)" }
                 $tpaths += $tp
             }
+            # 선언 dependencies의 라이브러리가 OutDir에 빌드돼 있으면 읽기 전용으로 열어 둔다(시험이 Application.Run으로 부른다).
+            $depIds = @()
+            if ($useClient) { $depIds += 'clockout-lib' }
+            foreach ($vd in $vendorDeps) { $depIds += [string]$vd.id }
+            foreach ($d in $depIds) {
+                $dp = Join-Path $OutDir "$d.xlam"
+                if (Test-Path $dp) { $null = $xl.Workbooks.Open($dp, 0, $true); Info "  시험용으로 연 라이브러리: $d.xlam" }
+                else { Info "  주의: $dp 가 없어 $d 없이 시험합니다(먼저 -Addin $(if ($d -eq 'clockout-lib') { '_common' } else { $d })로 빌드하세요)." }
+            }
             $tb = New-Book $xl
             foreach ($tp in $tpaths) { Import-Source $tb.VBProject $tp }
             $failed = 0
@@ -296,6 +343,12 @@ try {
             if ($f.Extension -eq '.frm' -and (Test-Path $frxZ)) { Add-Entry $za $frxZ ("src/" + [IO.Path]::GetFileName($frxZ)) }
         }
         if ($twFile) { Add-Entry $za $twFile.FullName ("src/" + $twFile.Name) }
+        # 외부 원본을 넣었으면 MIT 조건대로 각 라이브러리의 LICENSE 전문과 출처표를 함께 넣는다.
+        foreach ($vd in $vendorDirs) {
+            $lic = Join-Path $vendorRoot "$vd\LICENSE"
+            if (Test-Path $lic) { Add-Entry $za $lic "licenses/$vd/LICENSE" } else { Fail "외부 원본 $vd 의 LICENSE가 없습니다: $lic" }
+        }
+        if ($vendorDirs.Count -gt 0) { Add-Entry $za (Join-Path $vendorRoot 'SOURCES.md') 'licenses/SOURCES.md' }
     } finally { $za.Dispose() }
     Info "저장: $zip"
     $za = [IO.Compression.ZipFile]::OpenRead($zip)
