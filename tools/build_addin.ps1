@@ -249,19 +249,28 @@ try {
         Add-Type -AssemblyName System.IO.Compression
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         $esc = { param($t) [Security.SecurityElement]::Escape([string]$t) }
-        $gid = 'grp_' + ($outId -replace '[^A-Za-z0-9]', '_')
-        $gname = if ($declObj.name) { [string]$declObj.name } else { $outId }
+        # 분류(category)마다 그룹 하나(같은 idQ라 여러 추가기능이 한 그룹으로 합쳐짐). 명령이 3개 이상이면 추가기능 이름의 드롭다운 안에 넣는다.
+        $aid = ($outId -replace '[^A-Za-z0-9]', '_')
+        $aname = if ($declObj.name) { [string]$declObj.name } else { $outId }
+        $cat = if ($declObj.category) { [string]$declObj.category } else { '기타' }
+        $catMap = @{ '값 정리' = 'value'; '표·범위' = 'range'; '시트·문서' = 'book'; '보기·선택' = 'view'; '사진·도형' = 'shape'; '기타' = 'misc' }
+        $gid = 'grp_' + $(if ($catMap.ContainsKey($cat)) { $catMap[$cat] } else { 'c' + ([BitConverter]::ToString([Security.Cryptography.MD5]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($cat))) -replace '-', '').Substring(0, 8) })
+        $aicon = if ($declObj.icon) { [string]$declObj.icon } else { 'MacroPlay' }
+        $useMenu = ($cmds.Count -ge 3)
         $btns = New-Object Text.StringBuilder
         foreach ($c in $cmds) {
-            $icon = if ($c.icon) { [string]$c.icon } else { 'MacroPlay' }
+            $icon = if ($c.icon) { [string]$c.icon } else { $aicon }
             $tip = if ($c.tip) { " screentip=`"$(& $esc $c.label)`" supertip=`"$(& $esc $c.tip)`"" } else { '' }
-            [void]$btns.Append("      <button idQ=`"ck:btn_${gid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`" size=`"large`" tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click`"$tip />`n")
+            $sz = if ($useMenu) { '' } else { ' size="large"' }
+            $ind = if ($useMenu) { '          ' } else { '      ' }
+            [void]$btns.Append("$ind<button idQ=`"ck:btn_${aid}_$($c.id)`" label=`"$(& $esc $c.label)`" imageMso=`"$(& $esc $icon)`"$sz tag=`"$(& $esc $c.macro)`" onAction=`"CoRibbon_Click`"$tip />`n")
         }
+        $inner = if ($useMenu) { "      <menu idQ=`"ck:mnu_$aid`" label=`"$(& $esc $aname)`" imageMso=`"$(& $esc $aicon)`" size=`"large`">`n" + $btns.ToString() + "      </menu>`n" } else { $btns.ToString() }
         $ui = "<?xml version=`"1.0`" encoding=`"UTF-8`" standalone=`"yes`"?>`n" +
               "<customUI xmlns=`"http://schemas.microsoft.com/office/2009/07/customui`" xmlns:ck=`"urn:clockout:ribbon`">`n" +
               "  <ribbon>`n    <tabs>`n" +
               "    <tab idQ=`"ck:main`" label=`"칼퇴`" insertAfterMso=`"TabView`">`n" +
-              "     <group idQ=`"ck:$gid`" label=`"$(& $esc $gname)`">`n" + $btns.ToString() + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"
+              "     <group idQ=`"ck:$gid`" label=`"$(& $esc $cat)`">`n" + $inner + "     </group>`n    </tab>`n    </tabs>`n  </ribbon>`n</customUI>`n"
         $utf8 = New-Object Text.UTF8Encoding($false)
         $za = [IO.Compression.ZipFile]::Open($xlam, 'Update')
         try {
