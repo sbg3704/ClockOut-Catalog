@@ -27,6 +27,54 @@
             "size": 73282
         },
         {
+            "id": "clockout-vendor-array",
+            "name": "칼퇴 외부 라이브러리: 배열(BetterArray·stdArray·람다)",
+            "version": "0.1.000",
+            "author": "ClockOut (원본: Nick Morgan / Senipah, James Warren / sancarn)",
+            "host": "excel",
+            "category": "라이브러리",
+            "description": "배열 정렬·검색·변환(BetterArray, stdArray), 지연 목록(stdEnumerator), 글로 쓰는 작은 함수(stdLambda), 매크로 호출 개체(stdCallback)를 제공합니다. 원본은 VBA-Better-Array와 stdVBA(MIT)이며 고치지 않았습니다.",
+            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-array-0.1.000/clockout-vendor-array.zip",
+            "sha256": "55503b35d62679295bf0980bf3aec840b26f56d67cf97eeac0306bd23033dfca",
+            "size": 632979
+        },
+        {
+            "id": "clockout-vendor-data",
+            "name": "칼퇴 외부 라이브러리: 형식(JSON·사전·날짜)",
+            "version": "0.1.000",
+            "author": "ClockOut (원본: Tim Hall / VBA-tools)",
+            "host": "excel",
+            "category": "라이브러리",
+            "description": "JSON 읽기·쓰기, 사전(Dictionary), ISO 8601·UTC 날짜 변환을 제공합니다. 원본은 VBA-JSON과 VBA-Dictionary(MIT)이며 한 글자도 고치지 않았습니다. 이 라이브러리가 필요한 추가기능을 설치하면 함께 설치됩니다.",
+            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-data-0.1.000/clockout-vendor-data.zip",
+            "sha256": "d6671e08fb0f7f67b9bf09b3074ef9040f81641e723237f8da4ed9ec9caf7d8e",
+            "size": 114745
+        },
+        {
+            "id": "clockout-vendor-sys",
+            "name": "칼퇴 외부 라이브러리: 시스템(클립보드·레지스트리·창·프로세스)",
+            "version": "0.1.000",
+            "author": "ClockOut (원본: James Warren / sancarn stdVBA)",
+            "host": "excel",
+            "category": "라이브러리",
+            "description": "Windows 기능을 VBA에서 쓰는 도구 모음입니다: 클립보드(stdClipboard), 성능 측정·화면 갱신 끄기(stdPerformance), 레지스트리(stdReg), 프로세스(stdProcess), 창·접근성 개체(stdWindow, stdAcc), 이미지(stdImage), COM 저수준 호출(stdCOM). Windows 전용입니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
+            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-sys-0.1.000/clockout-vendor-sys.zip",
+            "sha256": "2f16082652b0fb6e0721525450d9c8fec683acb52926b6032e56ee983e1d2b2a",
+            "size": 762424
+        },
+        {
+            "id": "clockout-vendor-text",
+            "name": "칼퇴 외부 라이브러리: 글자(정규식·HTML)",
+            "version": "0.1.000",
+            "author": "ClockOut (원본: James Warren / sancarn stdVBA)",
+            "host": "excel",
+            "category": "라이브러리",
+            "description": "순수 VBA 정규식(stdRegex)과 HTML 만들기(stdHTML)를 제공합니다. Windows에서 VBScript(VBScript.RegExp)가 빠져도 그대로 동작합니다. 원본은 stdVBA(MIT)이며 고치지 않았습니다.",
+            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-vendor-text-0.1.000/clockout-vendor-text.zip",
+            "sha256": "3530c9322ec03a7de5fac51d6a9f8cfab9c4e937b59b70e69f020c3c9c1f6f3e",
+            "size": 413281
+        },
+        {
             "id": "cross-hair",
             "name": "십자 음영",
             "version": "0.1.000",
@@ -135,18 +183,6 @@
             "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/clockout-lib-0.1.001/clockout-lib.zip",
             "sha256": "62ff7a40b3ee077c9d61b82ceda6fa7cba149da0a787b3206e264e44e58fbcfd",
             "size": 203422
-        },
-        {
-            "id": "vba-vendor",
-            "name": "외부 VBA 라이브러리 모음",
-            "version": "0.1.000",
-            "author": "VBA-tools(Tim Hall), Senipah, sancarn",
-            "host": "excel",
-            "license": "MIT (라이브러리마다 LICENSE 포함)",
-            "description": "매크로 제작용 공개 VBA 라이브러리 원본 모음: VBA-JSON, VBA-Dictionary, VBA-UTC, VBA-Web, VBA-Better-Array, stdVBA. 설치하는 추가기능이 아니라 소스 모음이며, 출처·커밋·라이선스는 SOURCES.md에 있습니다. 공용 lib(clockout-lib)와는 별개입니다.",
-            "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/vba-vendor-0.1.000/vba-vendor.zip",
-            "sha256": "c63d2948c1854e58ca4bba1a202218cea27b55337457864c9703bf13eb1f348a",
-            "size": 477069
         }
     ]
 }
