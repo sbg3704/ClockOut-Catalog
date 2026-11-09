@@ -6,7 +6,7 @@ Attribute VB_Name = "CrossHair"
 '       덮지 않음)이고, 설정으로 연한 음영을 더하거나 음영만 쓸 수도 있다. 셀 값은 건드리지 않고, 시트 전체에
 '       표시 전용 조건부 서식 규칙을 걸어 둔다. 끄거나 저장할 때 규칙을 지워 파일에 흔적이 남지 않는다.
 ' 매크로:
-'   CrossHair_Toggle   켜기/끄기 (기본 단축키 Ctrl+Shift+H)
+'   CrossHair_Toggle   켜기/끄기 (기본 단축키 없음, 설정에서 지정)
 ' 사용법: 단축키나 매크로로 켜면 선택을 옮길 때마다 따라온다. 색·행/열 선택·단축키는 칼퇴 설정창에서 바꾼다
 '         (선언: cross-hair.clockout.json, 값 저장: %APPDATA%\ClockOut\settings\cross-hair.json).
 ' 원리: 규칙 수식이 CELL("row")·CELL("col")(지금 선택한 칸)을 읽고, 선택이 바뀔 때마다 그 시트만 다시
@@ -21,7 +21,7 @@ Private Const ADDIN_ID As String = "cross-hair"     ' .clockout.json의 id와 �
 Private Const ADDIN_NAME As String = "십자 음영"
 Private Const MIN_LIB As String = "0.1.001"          ' .clockout.json의 dependencies.min_version과 같게
 Private Const MARK As String = "ClockOutCross"      ' 규칙 수식 안의 표식: 우리가 만든 규칙을 찾는 데 쓴다
-Private Const DEFAULT_KEY As String = "^+H"
+Private Const DEFAULT_KEY As String = ""
 Private Const DEFAULT_LINE As String = "#C5E4A8"
 Private Const DEFAULT_FILL As String = "#F0F9E6"
 Private Const DEFAULT_ACTIVE As String = "#B7E58E"
@@ -107,7 +107,7 @@ Public Sub CrossHair_Startup()
     On Error Resume Next
     Set api = CoLibClient_Api(MIN_LIB, ADDIN_NAME, True)
     mKey = DEFAULT_KEY
-    If Not api Is Nothing Then mKey = api.CoSetting_Text(ADDIN_ID, "keyToggle", DEFAULT_KEY)
+    If Not api Is Nothing Then mKey = api.CoSetting_Text(ADDIN_ID, "key.toggle", DEFAULT_KEY)
     If Len(mKey) > 0 Then Application.OnKey mKey, "'" & ThisWorkbook.Name & "'!CrossHair_Toggle"
     If Not api Is Nothing Then
         If api.CoSetting_Bool(ADDIN_ID, "startOn", False) Then CrossHair_On True
