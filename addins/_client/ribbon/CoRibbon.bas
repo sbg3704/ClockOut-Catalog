@@ -23,6 +23,11 @@ EH:
     MsgBox "'" & macroName & "' 명령을 실행하지 못했습니다." & vbCrLf & Err.Description, vbExclamation, "칼퇴"
 End Sub
 
+Public Sub CoRibbon_Load(ribbon As IRibbonUI)
+    ' 진단용: 이 파일의 리본이 올라올 때 한 줄 남긴다(엑셀이 이 파일의 콜백을 찾을 수 있다는 증거).
+    CoRibbon_Log "load @ " & ThisWorkbook.Name
+End Sub
+
 Private Sub CoRibbon_Log(ByVal msg As String)
     ' 진단용: 단추가 눌렸는지 확인할 수 있게 임시 폴더에 한 줄씩 남긴다(실패해도 무시).
     Dim f As Integer
