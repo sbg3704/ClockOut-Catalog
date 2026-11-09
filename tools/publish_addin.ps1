@@ -69,8 +69,14 @@ $ErrorActionPreference = 'Stop'
 # 4) catalog.json 갱신(UTF-8, BOM 없음)
 $catPath = Join-Path $repo 'catalog.json'
 $cat = [IO.File]::ReadAllText($catPath, [Text.Encoding]::UTF8) | ConvertFrom-Json
-$list = @($cat.addins | Where-Object { $_.id -ne $outId }) + [pscustomobject]$entry
-$cat.addins = @($list | Sort-Object id)
+if ($Addin -eq '_common') {
+    # 공용 라이브러리는 addins가 아니라 libraries 키에 둔다(앱이 맨 위 따로 보여 줌)
+    $list = @($cat.libraries | Where-Object { $_.id -ne $outId }) + [pscustomobject]$entry
+    $cat.libraries = @($list | Sort-Object id)
+} else {
+    $list = @($cat.addins | Where-Object { $_.id -ne $outId }) + [pscustomobject]$entry
+    $cat.addins = @($list | Sort-Object id)
+}
 $cat.updated = (Get-Date).ToString('yyyy-MM-dd')
 $json = ($cat | ConvertTo-Json -Depth 6)
 [IO.File]::WriteAllText($catPath, ($json -replace "`r`n", "`n") + "`n", (New-Object Text.UTF8Encoding($false)))
