@@ -12,8 +12,20 @@ Public Sub CoRibbon_Click(control As IRibbonControl)
     Dim macroName As String
     On Error GoTo EH
     macroName = control.Tag
+    CoRibbon_Log "click " & macroName & " @ " & ThisWorkbook.Name
     Application.Run "'" & ThisWorkbook.Name & "'!" & macroName
     Exit Sub
 EH:
+    CoRibbon_Log "error " & macroName & ": " & Err.Number & " " & Err.Description
     MsgBox "'" & macroName & "' 명령을 실행하지 못했습니다." & vbCrLf & Err.Description, vbExclamation, "칼퇴"
+End Sub
+
+Private Sub CoRibbon_Log(ByVal msg As String)
+    ' 진단용: 단추가 눌렸는지 확인할 수 있게 임시 폴더에 한 줄씩 남긴다(실패해도 무시).
+    Dim f As Integer
+    On Error Resume Next
+    f = FreeFile
+    Open Environ$("TEMP") & "\clockout_ribbon.log" For Append As #f
+    Print #f, Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & msg
+    Close #f
 End Sub
