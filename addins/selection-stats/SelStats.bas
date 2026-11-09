@@ -4,7 +4,7 @@ Attribute VB_Name = "SelStats"
 '==============================================================
 ' 기능: 엑셀 아래 상태 표시줄의 평균·개수·합계를 큰 글자로 보여 주는 창을 띄우고, 선택이 바뀔 때마다 갱신한다.
 ' 매크로:
-'   SelStats_Toggle   창 열기/닫기 (기본 단축키 Ctrl+Shift+T)
+'   SelStats_Toggle   창 열기/닫기 (기본 단축키 없음, 설정에서 지정)
 ' 사용법: 단축키나 매크로로 켜면 창이 뜨고, 칸을 고를 때마다 값이 바뀐다. 글자 크기·보일 값·쉼표·단축키는
 '         칼퇴 설정창에서 바꾼다(선언: selection-stats.clockout.json, 값 저장: %APPDATA%\ClockOut\settings\selection-stats.json).
 ' 규칙: 값 계산은 SelStatsCalc.bas, 화면은 SelStatsForm.frm, 이벤트는 SelStatsEvents.cls에 있다.
@@ -16,7 +16,7 @@ Option Explicit
 Private Const ADDIN_ID As String = "selection-stats"   ' .clockout.json의 id와 같게
 Private Const ADDIN_NAME As String = "선택 요약 크게 보기"
 Private Const MIN_LIB As String = "0.1.001"            ' .clockout.json의 dependencies.min_version과 같게
-Private Const DEFAULT_KEY As String = "^+T"
+Private Const DEFAULT_KEY As String = ""
 
 Private mForm As SelStatsForm
 Private mEvents As SelStatsEvents

@@ -15,6 +15,6 @@
     {"key": "showNumCount", "label": "숫자 개수도 보기", "type": "bool", "default": false, "help": "개수는 비어 있지 않은 칸 전부, 숫자 개수는 숫자인 칸만"},
     {"key": "showMinMax", "label": "최소·최대도 보기", "type": "bool", "default": true},
     {"key": "startOn", "label": "Excel을 켤 때 창 자동으로 열기", "type": "bool", "default": false},
-    {"key": "keyToggle", "label": "창 열기/닫기 단축키", "type": "text", "default": "^+T", "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"}
+    {"key": "keyToggle", "label": "창 열기/닫기 단축키", "type": "text", "default": "", "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"}
   ]
 }

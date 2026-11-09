@@ -77,7 +77,7 @@
       "key": "keyToggle",
       "label": "켜기/끄기 단축키",
       "type": "text",
-      "default": "^+H",
+      "default": "",
       "help": "Application.OnKey 형식(^=Ctrl, +=Shift, %=Alt). 비우면 단축키 없음. 다음에 엑셀을 켤 때 적용"
     }
   ]
