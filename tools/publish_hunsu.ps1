@@ -25,7 +25,7 @@ $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $repoSlug = 'sbg3704/ClockOut-Catalog'
 $repo = Split-Path -Parent $PSScriptRoot
-$maxBytes = 300MB   # CatalogAppParser.MaxAppSizeBytes 와 같은 값
+$maxBytes = 2GB   # CatalogAppParser.MaxAppSizeBytes 와 같은 값(용량은 걱정하지 않기로 함, 안전 상한)
 
 function Stop-With([string]$msg, [int]$code = 1) { Write-Host "[중단] $msg" -ForegroundColor Red; exit $code }
 
@@ -38,7 +38,7 @@ if ($m.version -notmatch '^[A-Za-z0-9][A-Za-z0-9.-]*$' -or $m.version -like '*..
 
 $sha = (Get-FileHash $Zip -Algorithm SHA256).Hash.ToLower()
 $size = (Get-Item $Zip).Length
-if ($size -gt $maxBytes) { Stop-With "zip이 300MB를 넘습니다($size 바이트). 앱이 이 항목을 건너뜁니다." }
+if ($size -gt $maxBytes) { Stop-With "zip이 2GB를 넘습니다($size 바이트). 앱이 이 항목을 건너뜁니다." }
 $tag = "app-$($m.id)-$($m.version)"
 $assetName = "$($m.id).zip"
 $url = "https://github.com/$repoSlug/releases/download/$tag/$assetName"
