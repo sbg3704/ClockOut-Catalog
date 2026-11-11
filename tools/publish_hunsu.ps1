@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   [초안] 하위 프로그램(훈수꾼) 틀 zip을 GitHub Release로 올리고 catalog.json의 apps 구역에 등록한다.
 .DESCRIPTION
