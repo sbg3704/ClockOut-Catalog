@@ -1,6 +1,6 @@
 {
   "spec": 0,
-  "updated": "2026-11-12",
+  "updated": "2026-11-17",
   "addins": [
     {
       "id": "book-clean",
@@ -189,12 +189,12 @@
     {
       "id": "hunsu",
       "name": "훈수꾼",
-      "version": "0.0.045",
+      "version": "0.0.201",
       "icon": "hunsu",
       "summary": "[시험 기능 · 테스트 중] 엑셀 창 위에 선택 요약과 점검 결과를 겹쳐 보여 줍니다.",
-      "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.045/hunsu.zip",
-      "sha256": "3f35ec752e0dc592cf18c7cb946efcdbf7bcb57f891378ac82c32efb9b444cc0",
-      "size": 77052037,
+      "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.201/hunsu.zip",
+      "sha256": "cb81f8d5dd17eda2a07bf1b61faf9178749502e819aa411cc03d7c26105248e2",
+      "size": 78687802,
       "host": "excel"
     }
   ]
