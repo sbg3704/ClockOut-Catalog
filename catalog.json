@@ -189,12 +189,12 @@
     {
       "id": "hunsu",
       "name": "훈수꾼",
-      "version": "0.0.201",
+      "version": "0.0.202",
       "icon": "hunsu",
       "summary": "[시험 기능 · 테스트 중] 엑셀 창 위에 선택 요약과 점검 결과를 겹쳐 보여 줍니다.",
-      "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.201/hunsu.zip",
-      "sha256": "cb81f8d5dd17eda2a07bf1b61faf9178749502e819aa411cc03d7c26105248e2",
-      "size": 78687802,
+      "url": "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.202/hunsu.zip",
+      "sha256": "cac873448ea3be172256c688494a75caca0cfdaefb21ce46611eb19375735bbe",
+      "size": 78688939,
       "host": "excel"
     }
   ]
