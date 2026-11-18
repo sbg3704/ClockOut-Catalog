@@ -36,8 +36,10 @@ Private mActive As String
 Private mFilt() As String
 Private mFiltN As Long
 Private mBusy As Boolean
+Private mFontPt As Double
 
 Public Sub Build(ByVal fontPt As Double, ByVal showHidden As Boolean)
+    mFontPt = fontPt
     Me.StartUpPosition = 0
     Me.Caption = "시트 목록"
     Set mHead = Me.Controls.Add("Forms.Label.1", "lblWb", True)
@@ -45,15 +47,15 @@ Public Sub Build(ByVal fontPt As Double, ByVal showHidden As Boolean)
     Set mSearch = Me.Controls.Add("Forms.TextBox.1", "txtFind", True)
     mSearch.Font.Size = fontPt: mSearch.ControlTipText = "시트 이름 검색 (Enter: 첫 결과로 이동, 아래 화살표: 목록으로)"
     Set mList = Me.Controls.Add("Forms.ListBox.1", "lstSheets", True)
-    mList.Font.Size = fontPt: mList.MultiSelect = fmMultiSelectSingle
+    mList.IntegralHeight = False: mList.Font.Size = fontPt: mList.MultiSelect = fmMultiSelectSingle
     Set mInfo = Me.Controls.Add("Forms.Label.1", "lblInfo", True)
-    mInfo.Font.Size = fontPt - 1: mInfo.ForeColor = RGB(110, 110, 110)
+    mInfo.Font.Size = fontPt: mInfo.ForeColor = RGB(110, 110, 110)
     Set mHid = Me.Controls.Add("Forms.CheckBox.1", "chkHidden", True)
-    mHid.Font.Size = fontPt - 1: mHid.Caption = "숨김 시트도 보기": mHid.Value = showHidden
+    mHid.Font.Size = fontPt: mHid.Caption = "숨김 시트도 보기": mHid.Value = showHidden
     Set mSwap = Me.Controls.Add("Forms.CommandButton.1", "cmdSide", True)
-    mSwap.Font.Size = fontPt - 1: mSwap.Caption = "반대쪽"
+    mSwap.Font.Size = fontPt: mSwap.Caption = "반대쪽"
     Set mRef = Me.Controls.Add("Forms.CommandButton.1", "cmdRefresh", True)
-    mRef.Font.Size = fontPt - 1: mRef.Caption = "새로고침"
+    mRef.Font.Size = fontPt: mRef.Caption = "새로고침"
     Layout
 End Sub
 
@@ -64,17 +66,30 @@ Public Sub SetBounds(ByVal l As Double, ByVal t As Double, ByVal w As Double, By
 End Sub
 
 Private Sub Layout()
-    Dim w As Double, h As Double, lh As Double
+    Dim w As Double, h As Double, lh As Double, rowH As Double, y As Double
     On Error Resume Next
     w = Me.InsideWidth: h = Me.InsideHeight
-    mHead.Left = 6: mHead.Top = 4: mHead.Width = w - 12: mHead.Height = 14
-    mSearch.Left = 6: mSearch.Top = 22: mSearch.Width = w - 12: mSearch.Height = 20
-    lh = h - 46 - 66: If lh < 40 Then lh = 40
-    mList.Left = 6: mList.Top = 46: mList.Width = w - 12: mList.Height = lh
-    mInfo.Left = 6: mInfo.Top = 46 + lh + 4: mInfo.Width = w - 12: mInfo.Height = 14
-    mHid.Left = 6: mHid.Top = 46 + lh + 20: mHid.Width = w - 12: mHid.Height = 16
-    mSwap.Left = 6: mSwap.Top = 46 + lh + 40: mSwap.Width = (w - 18) / 2: mSwap.Height = 20
-    mRef.Left = 12 + (w - 18) / 2: mRef.Top = mSwap.Top: mRef.Width = (w - 18) / 2: mRef.Height = 20
+    If h < 100 Then h = Me.Height - 30                 ' 안쪽 높이를 못 읽으면 바깥 높이에서 제목줄 몫을 뺀다
+    rowH = mFontPt * 2 + 6                             ' 글자 크기에 맞춘 한 줄 높이
+    mHead.Left = 8: mHead.Top = 6: mHead.Width = w - 16: mHead.Height = mFontPt * 1.6
+    y = 6 + mFontPt * 1.6 + 6
+    mSearch.Left = 8: mSearch.Top = y: mSearch.Width = w - 16: mSearch.Height = rowH
+    y = y + rowH + 6
+    lh = h - y - (mFontPt * 1.6 + rowH * 2 + 26)       ' 아래 안내줄·숨김 체크·단추 몫을 뺀 나머지를 목록이 다 쓴다
+    If lh < 60 Then lh = 60
+    mList.Left = 8: mList.Top = y: mList.Width = w - 16: mList.Height = lh
+    y = y + lh + 6
+    mInfo.Left = 8: mInfo.Top = y: mInfo.Width = w - 16: mInfo.Height = mFontPt * 1.6
+    y = y + mFontPt * 1.6 + 4
+    mHid.Left = 8: mHid.Top = y: mHid.Width = w - 16: mHid.Height = rowH - 4
+    y = y + rowH
+    mSwap.Left = 8: mSwap.Top = y: mSwap.Width = (w - 24) / 2: mSwap.Height = rowH
+    mRef.Left = 16 + (w - 24) / 2: mRef.Top = y: mRef.Width = (w - 24) / 2: mRef.Height = rowH
+End Sub
+
+' 창을 다 띄운 뒤 안쪽 크기가 확정된 값으로 다시 배치한다.
+Public Sub Relayout()
+    Layout
 End Sub
 
 ' 목록을 새로 넣는다. names/hidden은 1부터 count까지, activeName은 지금 보고 있는 시트(목록에서 골라 둔다).

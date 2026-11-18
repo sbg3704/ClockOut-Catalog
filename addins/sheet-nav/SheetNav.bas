@@ -45,13 +45,14 @@ Public Sub SheetNav_On(ByVal quiet As Boolean)
     Set mApi = CoLibClient_Api(MIN_LIB, ADDIN_NAME, quiet)
     If mApi Is Nothing Then Exit Sub
     mRight = (mApi.CoSetting_Choice(ADDIN_ID, "side", SIDE_RIGHT, SIDE_RIGHT, SIDE_LEFT) = SIDE_RIGHT)
-    mWidth = mApi.CoSetting_Number(ADDIN_ID, "width", 190, 140, 420)
-    mFontPt = mApi.CoSetting_Number(ADDIN_ID, "fontSize", 10, 8, 18)
+    mWidth = mApi.CoSetting_Number(ADDIN_ID, "width", 260, 160, 560)
+    mFontPt = mApi.CoSetting_Number(ADDIN_ID, "fontSize", 13, 9, 22)
     mShowHidden = mApi.CoSetting_Bool(ADDIN_ID, "showHidden", False)
     Set mForm = New SheetNavForm
     mForm.Build mFontPt, mShowHidden
     Dock
     mForm.Show vbModeless
+    mForm.Relayout
     On Error Resume Next
     AppActivate Application.Caption                    ' 키보드 입력이 엑셀로 돌아가게(창은 그대로 뜬 채)
     On Error GoTo 0
