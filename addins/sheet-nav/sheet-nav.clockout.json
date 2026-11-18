@@ -1,0 +1,25 @@
+{
+  "spec": 0,
+  "id": "sheet-nav",
+  "name": "시트 사이드바",
+  "version": "0.1.000",
+  "host": "excel",
+  "group": "시트 이동",
+  "icon": "GoToNextSheet,TabNext,WindowSwitchWindowsMenuExcel,ViewSwitchWindowsGallery",
+  "category": "시트·문서",
+  "author": "ClockOut",
+  "description": "엑셀 창 왼쪽이나 오른쪽에 시트 목록을 띄워 두고 이름을 눌러 바로 이동합니다. 시트가 많으면 검색 칸으로 이름을 걸러 찾습니다. 시트를 추가하거나 바꾸면 목록이 따라 바뀝니다. 숨김 시트는 설정을 켜면 보이고, 누르면 보이게 할지 묻습니다.",
+  "dependencies": [
+    {"id": "clockout-lib", "min_version": "0.1.001", "reason": "설정 읽기와 확인 창에 공용 라이브러리를 씁니다"}
+  ],
+  "commands": [
+    {"id": "toggle", "label": "시트 사이드바 열기/닫기", "macro": "SheetNav_Toggle", "tip": "엑셀 창 옆에 시트 목록을 띄워 클릭으로 이동", "icon": "GoToNextSheet,TabNext,WindowSwitchWindowsMenuExcel,ViewSwitchWindowsGallery", "main": true, "key": ""}
+  ],
+  "params": [
+    {"key": "side", "label": "붙일 쪽", "type": "choice", "options": ["오른쪽", "왼쪽"], "default": "오른쪽", "help": "창 위의 반대쪽 단추로 그때그때 바꿀 수도 있습니다"},
+    {"key": "width", "label": "창 너비", "type": "number", "unit": "pt", "default": 190, "min": 140, "max": 420, "help": "다음에 창을 열 때 적용"},
+    {"key": "fontSize", "label": "글자 크기", "type": "number", "unit": "pt", "default": 10, "min": 8, "max": 18, "help": "다음에 창을 열 때 적용"},
+    {"key": "showHidden", "label": "숨김 시트도 목록에 보이기", "type": "bool", "default": false, "help": "숨김 시트를 누르면 보이게 할지 묻습니다. 아주 숨김(VeryHidden) 시트는 보이지 않습니다"},
+    {"key": "startOn", "label": "Excel을 켤 때 사이드바 자동으로 열기", "type": "bool", "default": false}
+  ]
+}
