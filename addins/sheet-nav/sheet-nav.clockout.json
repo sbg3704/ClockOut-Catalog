@@ -2,7 +2,7 @@
   "spec": 0,
   "id": "sheet-nav",
   "name": "시트 사이드바",
-  "version": "0.1.000",
+  "version": "0.1.001",
   "host": "excel",
   "group": "시트 이동",
   "icon": "GoToNextSheet,TabNext,WindowSwitchWindowsMenuExcel,ViewSwitchWindowsGallery",
@@ -17,8 +17,8 @@
   ],
   "params": [
     {"key": "side", "label": "붙일 쪽", "type": "choice", "options": ["오른쪽", "왼쪽"], "default": "오른쪽", "help": "창 위의 반대쪽 단추로 그때그때 바꿀 수도 있습니다"},
-    {"key": "width", "label": "창 너비", "type": "number", "unit": "pt", "default": 190, "min": 140, "max": 420, "help": "다음에 창을 열 때 적용"},
-    {"key": "fontSize", "label": "글자 크기", "type": "number", "unit": "pt", "default": 10, "min": 8, "max": 18, "help": "다음에 창을 열 때 적용"},
+    {"key": "width", "label": "창 너비", "type": "number", "unit": "pt", "default": 260, "min": 160, "max": 560, "help": "다음에 창을 열 때 적용"},
+    {"key": "fontSize", "label": "글자 크기", "type": "number", "unit": "pt", "default": 13, "min": 9, "max": 22, "help": "다음에 창을 열 때 적용"},
     {"key": "showHidden", "label": "숨김 시트도 목록에 보이기", "type": "bool", "default": false, "help": "숨김 시트를 누르면 보이게 할지 묻습니다. 아주 숨김(VeryHidden) 시트는 보이지 않습니다"},
     {"key": "startOn", "label": "Excel을 켤 때 사이드바 자동으로 열기", "type": "bool", "default": false}
   ]
