@@ -137,14 +137,14 @@
                    {
                        "id":  "sheet-nav",
                        "name":  "시트 사이드바",
-                       "version":  "0.1.000",
+                       "version":  "0.1.001",
                        "author":  "ClockOut",
                        "host":  "excel",
                        "category":  "시트·문서",
                        "description":  "엑셀 창 왼쪽이나 오른쪽에 시트 목록을 띄워 두고 이름을 눌러 바로 이동합니다. 시트가 많으면 검색 칸으로 이름을 걸러 찾습니다. 시트를 추가하거나 바꾸면 목록이 따라 바뀝니다. 숨김 시트는 설정을 켜면 보이고, 누르면 보이게 할지 묻습니다.",
-                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/sheet-nav-0.1.000/sheet-nav.zip",
-                       "sha256":  "8f7c490437624854b9f239a2a53e470fb44e895dad85a2f2b2a268a5cb17b0d4",
-                       "size":  73576
+                       "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/sheet-nav-0.1.001/sheet-nav.zip",
+                       "sha256":  "9a47031543b3ce0602f66c12ef24cb71131f499bf7aad453a1202c29506f7610",
+                       "size":  74821
                    },
                    {
                        "id":  "sheet-tools",
