@@ -97,7 +97,7 @@
 
 ## 4. 공용 라이브러리와 종속성
 
-- 공용 VBA 부품은 `addins/_common/`(`clockout-lib`)에 있다. 기능 모듈은 **여기서 먼저 찾아 쓴다.** 목록과 이름 규칙은 `addins/_common/README.md`.
+- 공용 VBA 부품은 `addins/_common/`(`clockout-lib`)에 있다. 기능 모듈은 **여기서 먼저 찾아 쓴다.** **함수 목록·인자·동작·부르는 법·예제는 `docs/공용라이브러리_함수설명서.md`**(소스 쪽 설명은 `addins/_common/README.md`).
 - 방향은 한쪽뿐이다: **기능 모듈 → 공용 라이브러리.** 라이브러리가 기능 모듈을 참조하지 않고, 기능 모듈끼리도 서로의 함수에 기대지 않는다.
 - 라이브러리에 없는 도우미가 필요하면 기능 모듈 안에 비슷한 함수를 새로 만들지 말고 **라이브러리에 더해 달라고 제안**한다(이슈 또는 PR).
 - 쓰는 라이브러리는 선언의 `dependencies`에 정확히 적는다.
@@ -141,30 +141,33 @@
 - **지역 변수·인자 이름**으로 `name`·`out`·`scale`·`inStr`·`base`·`w`·`h` 처럼 VBA 예약어나 내장 함수와 겹칠 낱말을 쓰지 않는다(한글판 Excel에서 컴파일 오류가 난다). `fileName`·`outText`·`fitScale`처럼 붙여 쓴다.
 - 소스에 이모지 같은 **CP949로 쓸 수 없는 글자**를 넣지 않는다(한글판 VBA 편집기가 읽는 인코딩이 CP949라 빌드가 멈춘다).
 
-**뼈대 (복사해서 시작)**
+**뼈대 (복사해서 시작, 독립 라이브러리 방식)**
 ```vb
-Private Const ADDIN_ID As String = "my-addin"   ' 선언의 id와 같게
+Private Const ADDIN_ID As String = "my-addin"     ' 선언의 id와 같게
+Private Const ADDIN_NAME As String = "내 기능"
+Private Const MIN_LIB As String = "0.1.001"        ' 선언 dependencies의 min_version과 같게
 
 Public Sub MyAddin_Run()
-    Dim st As CoAppState, msg As String, why As String
+    Dim lib As Object, tok As Long, msg As String, why As String
     Dim ws As Worksheet, rng As Range, margin As Double
 
-    If Not CoRange_GetSelection(ws, rng, why) Then CoGuard_Notice why: Exit Sub
-    If Not CoRange_CanEdit(rng) Then CoGuard_Notice "보호된 셀이 있습니다.": Exit Sub
-    margin = CoSetting_Number(ADDIN_ID, "margin", 1#, 0, 20)   ' JSON의 default·min·max와 같게
+    Set lib = CoLibClient_Api(MIN_LIB, ADDIN_NAME): If lib Is Nothing Then Exit Sub
+    If Not lib.CoRange_GetSelection(ws, rng, why) Then lib.CoGuard_Notice why: Exit Sub
+    If Not lib.CoRange_CanEdit(rng) Then lib.CoGuard_Notice "보호된 셀이 있습니다.": Exit Sub
+    margin = lib.CoSetting_Number(ADDIN_ID, "margin", 1#, 0, 20)   ' 선언의 default·min·max와 같게
 
-    st = CoGuard_Begin()
+    tok = lib.CoGuard_Begin()
     On Error GoTo EH
     ' ... 작업 ...
-    CoGuard_End st
+    lib.CoGuard_End tok
     Exit Sub
 EH:
-    msg = CoGuard_ErrText("작업 중")   ' 맨 먼저: 다음 줄들이 Err를 지운다
-    CoGuard_End st
-    CoGuard_Notice msg
+    msg = lib.CoGuard_ErrText("작업 중")   ' 맨 먼저: 다음 줄들이 Err를 지운다
+    lib.CoGuard_End tok
+    lib.CoGuard_Notice msg
 End Sub
 ```
-(독립 라이브러리를 부르는 방식에서는 `coApi.CoGuard_Begin()`처럼 개체 메서드로 부른다. 함수 이름은 같고, 4장 참고.)
+(`CoLibClient_Api`는 빌드가 `dependencies`를 보고 자동으로 넣는 연결부다. 선언에 `"bundled": true`를 적고 라이브러리 `.bas`를 함께 컴파일하는 예전 방식에서는 `lib.` 없이 `CoRange_GetSelection(...)`처럼 부르고 `CoGuard_Begin`은 `CoAppState`를 돌려준다.) **어떤 함수가 있고 어떻게 부르는지는 `공용라이브러리_함수설명서.md`에 함수마다 적혀 있다.**
 
 ## 7. README와 패키지
 
