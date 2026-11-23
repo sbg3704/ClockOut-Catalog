@@ -1,6 +1,6 @@
 {
     "spec":  0,
-    "updated":  "2026-11-18",
+    "updated":  "2026-11-23",
     "addins":  [
                    {
                        "id":  "book-clean",
@@ -210,6 +210,17 @@
                      "sha256":  "cac873448ea3be172256c688494a75caca0cfdaefb21ce46611eb19375735bbe",
                      "size":  78688939,
                      "host":  "excel"
+                 },
+                 {
+                     "id":  "seonsu",
+                     "name":  "캐드선수",
+                     "version":  "0.0.057",
+                     "icon":  "seonsu",
+                     "summary":  "[시험 기능 · 테스트 중] 캐드 일, 선수한테 맡기고 칼퇴하세요. AutoCAD 리습을 팔레트에서 골라 실행합니다.",
+                     "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-seonsu-0.0.057/seonsu.zip",
+                     "sha256":  "1d185f353db08b631d35412df7cc75622b7fd74c0431dca5349222ed08083648",
+                     "size":  56712094,
+                     "host":  "autocad"
                  }
              ]
 }
