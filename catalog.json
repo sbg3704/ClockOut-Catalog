@@ -203,12 +203,12 @@
                  {
                      "id":  "hunsu",
                      "name":  "훈수꾼",
-                     "version":  "0.0.202",
+                     "version":  "0.0.288",
                      "icon":  "https://raw.githubusercontent.com/sbg3704/ClockOut-Catalog/main/icons/hunsu.ico",
-                     "summary":  "[시험 기능 · 테스트 중] 엑셀 창 위에 선택 요약과 점검 결과를 겹쳐 보여 줍니다.",
-                     "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.202/hunsu.zip",
-                     "sha256":  "cac873448ea3be172256c688494a75caca0cfdaefb21ce46611eb19375735bbe",
-                     "size":  78688939,
+                     "summary":  "엑셀 창 위에 선택 요약과 점검 결과를 겹쳐 보여 줍니다.",
+                     "url":  "https://github.com/sbg3704/ClockOut-Catalog/releases/download/app-hunsu-0.0.288/hunsu.zip",
+                     "sha256":  "5962bdc2c8c21061d63bf17ac7ed0edf8625c22ec5989495a4165e3e50a6c9d5",
+                     "size":  78932413,
                      "host":  "excel"
                  },
                  {
